@@ -11,7 +11,7 @@
   const TOTAL_COINS = 25;        // coins to collect to win
   const BASE_SPEED = 140;       // degrees per second (initial)
   const SPEED_INCREMENT = 0.05;      // +5% per hit
-  const HIT_ZONE_DEG = 20;        // ±degrees tolerance
+  const HIT_ZONE_DEG = 22;        // ±degrees tolerance
   const TRACK_SEGMENTS = 48;        // LED segments around ring
   const TRAIL_LENGTH = 6;         // arrow trail segments
   const COIN_MIN_OFFSET = 120;       // minimum degrees ahead for coin placement
@@ -284,7 +284,6 @@
     drawOuterRing();
     drawTrackSegments(arrowAngle);
     drawCoin(coinAngle);
-    drawHitZone(coinAngle);
     drawArrow(arrowAngle);
     drawCenterDisplay();
   }
@@ -347,26 +346,17 @@
     }
   }
 
-  function drawHitZone(coinAngle) {
-    const startRad = toRad(coinAngle - HIT_ZONE_DEG - 90);
-    const endRad = toRad(coinAngle + HIT_ZONE_DEG - 90);
-    ctx.beginPath();
-    ctx.arc(CX, CY, TRACK_R, startRad, endRad);
-    ctx.lineWidth = 14;
-    ctx.strokeStyle = 'rgba(255,215,0,0.12)';
-    ctx.stroke();
-  }
-
   function drawCoin(coinAngle) {
     const pos = polarToXY(coinAngle - 90, TRACK_R);
 
-    const glow = ctx.createRadialGradient(pos.x, pos.y, 0, pos.x, pos.y, COIN_R * 2.5);
-    glow.addColorStop(0, 'rgba(255,215,0,0.5)');
-    glow.addColorStop(0.5, 'rgba(255,180,0,0.2)');
+    // Subtle inner glow – tight radius so it reads as coin shine, not an activation zone
+    const glow = ctx.createRadialGradient(pos.x, pos.y, 0, pos.x, pos.y, COIN_R * 1.6);
+    glow.addColorStop(0, 'rgba(255,215,0,0.45)');
+    glow.addColorStop(0.6, 'rgba(255,180,0,0.15)');
     glow.addColorStop(1, 'rgba(255,180,0,0)');
     ctx.fillStyle = glow;
     ctx.beginPath();
-    ctx.arc(pos.x, pos.y, COIN_R * 2.5, 0, Math.PI * 2);
+    ctx.arc(pos.x, pos.y, COIN_R * 1.6, 0, Math.PI * 2);
     ctx.fill();
 
     const coinGrad = ctx.createRadialGradient(pos.x - 3, pos.y - 3, 1, pos.x, pos.y, COIN_R);
