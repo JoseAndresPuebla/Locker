@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CYCLONE – Arcade Timing Game</title>
+  <meta name="description" content="Juego arcade de timing: pulsa el botón cuando la flecha esté en la moneda. ¿Puedes ganar antes de que sea demasiado rápido?" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ── SCREEN: START ───────────────────────────── -->
+  <div id="screen-start" class="screen active">
+    <div class="screen-content">
+      <div class="logo">
+        <span class="logo-text">CYCLONE</span>
+        <div class="logo-sub">ARCADE TIMING CHALLENGE</div>
+      </div>
+      <div class="instructions">
+        <p>Pulsa cuando la <span class="highlight">flecha</span> esté sobre la <span class="coin-hl">moneda</span></p>
+        <p>Si fallas o pasas de largo… <span class="danger">GAME OVER</span></p>
+        <p>Acierta <strong>25 veces</strong> para ganar 🏆</p>
+      </div>
+      <div class="key-hints">
+        <span class="key">ESPACIO</span> <span class="key">CLICK</span> <span class="key">TAP</span>
+      </div>
+      <button id="btn-start" class="btn-main" aria-label="Iniciar juego">
+        <span>INSERTAR MONEDA</span>
+        <div class="btn-glow"></div>
+      </button>
+    </div>
+  </div>
+
+  <!-- ── SCREEN: GAME ───────────────────────────── -->
+  <div id="screen-game" class="screen">
+    <div class="hud">
+      <div class="hud-item">
+        <div class="hud-label">VELOCIDAD</div>
+        <div class="hud-value" id="hud-speed">1.0x</div>
+      </div>
+      <div class="hud-center">
+        <div id="counter-to-go" class="counter-number">25</div>
+        <div class="counter-label">TO GO!</div>
+      </div>
+      <div class="hud-item">
+        <div class="hud-label">ACIERTOS</div>
+        <div class="hud-value" id="hud-hits">0</div>
+      </div>
+    </div>
+
+    <div class="canvas-wrapper">
+      <canvas id="game-canvas" width="420" height="420" aria-label="Pista del juego"></canvas>
+      <div id="hit-feedback" class="hit-feedback"></div>
+    </div>
+
+    <button id="btn-action" class="btn-action" aria-label="Pulsar">
+      <div class="btn-action-ring"></div>
+      <span>¡PULSA!</span>
+    </button>
+  </div>
+
+  <!-- ── SCREEN: GAME OVER ──────────────────────── -->
+  <div id="screen-gameover" class="screen">
+    <div class="screen-content">
+      <div class="result-title danger-glow">GAME OVER</div>
+      <div class="result-sub">La flecha te ganó</div>
+      <div class="result-stats">
+        <div class="stat">
+          <div class="stat-value" id="go-hits">0</div>
+          <div class="stat-label">Aciertos</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value" id="go-speed">1.0x</div>
+          <div class="stat-label">Velocidad final</div>
+        </div>
+      </div>
+      <button id="btn-retry" class="btn-main" aria-label="Reintentar">
+        <span>REINTENTAR</span>
+        <div class="btn-glow"></div>
+      </button>
+    </div>
+  </div>
+
+  <!-- ── SCREEN: WIN ────────────────────────────── -->
+  <div id="screen-win" class="screen">
+    <div class="screen-content">
+      <div class="win-trophy">🏆</div>
+      <div class="result-title win-glow">¡GANASTE!</div>
+      <div class="result-sub">25 monedas recogidas</div>
+      <div id="win-particles" class="win-particles"></div>
+      <button id="btn-play-again" class="btn-main win" aria-label="Jugar de nuevo">
+        <span>JUGAR DE NUEVO</span>
+        <div class="btn-glow"></div>
+      </button>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
