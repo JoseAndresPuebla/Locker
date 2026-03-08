@@ -939,6 +939,33 @@ body.skin-crt .cs-earned { color: #FF0055; font-weight: bold; }
   width: 100%;
 }
 
+/* Shop sections */
+.shop-section-title {
+  grid-column: 1 / -1;
+  font-family: var(--font-arcade);
+  font-size: 14px;
+  color: var(--neon-cyan);
+  text-align: left;
+  border-bottom: 1px dashed rgba(0,207,255,0.3);
+  padding-bottom: 6px;
+  margin-top: 10px;
+  letter-spacing: 2px;
+}
+.addon-preview {
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  background: rgba(0,207,255,0.03);
+  border-radius: 10px;
+  border: 1px dashed rgba(0,207,255,0.2);
+}
+.skin-card.locked {
+  opacity: 0.6;
+  filter: grayscale(0.8);
+}
+
 /* Skin card */
 .skin-card {
   background: rgba(0,207,255,0.04);

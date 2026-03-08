@@ -45,7 +45,9 @@ let userData = {
   beaten: [],
   hs: {},
   stats: { gamesPlayed: 0, wins: 0, totalCoins: 0 },
-  quests: [] // array of { id, title, type, target, progress, reward, claimed }
+  quests: [], // array of { id, title, type, target, progress, reward, claimed }
+  addons: [],
+  activeAddons: []
 };
 
 // ── Quests Templates ──────────────────────────────────────────────────────
@@ -183,6 +185,13 @@ const SKIN_KEY  = 'cy_skin';
         rA: '#005533', rB: '#00aa66', rGlow: 'rgba(0,255,170,0.5)',
       }
     },
+  };
+
+  const ADDONS = {
+    zone_facil:   { name: 'ZONA FÁCIL', sub: '📐 GUÍA DE ACIERTO', cost: 50,  diff: 'facil', req: null },
+    zone_normal:  { name: 'ZONA NORMAL', sub: '📐 GUÍA DE ACIERTO', cost: 150, diff: 'normal', req: 'facil' },
+    zone_dificil: { name: 'ZONA DIFÍCIL', sub: '📐 GUÍA DE ACIERTO', cost: 300, diff: 'dificil', req: 'normal' },
+    zone_extremo: { name: 'ZONA EXTREMO', sub: '📐 GUÍA DE ACIERTO', cost: 600, diff: 'extremo', req: 'dificil' },
   };
 
   let SK = SKINS.cyclone.canvas; // active skin colors
@@ -445,6 +454,36 @@ const SKIN_KEY  = 'cy_skin';
   }
 
   function drawCoin(coinAngle) {
+    const isZoneActive = userData.activeAddons && userData.activeAddons.includes('zone_' + currentDifficulty);
+
+    if (isZoneActive) {
+      const hz = DIFFICULTIES[currentDifficulty].hitZone;
+      const startAngle = toRad(coinAngle - hz - 90);
+      const endAngle = toRad(coinAngle + hz - 90);
+
+      ctx.beginPath();
+      ctx.arc(CX, CY, TRACK_R, startAngle, endAngle);
+      ctx.lineWidth = 14;
+      ctx.lineCap = 'round';
+      ctx.strokeStyle = SK.coinFill;
+      ctx.shadowColor = SK.coinFill;
+      ctx.shadowBlur = 10;
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+
+      ctx.beginPath();
+      ctx.arc(CX, CY, TRACK_R, startAngle, endAngle);
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = SK.coinLight;
+      ctx.stroke();
+
+      const pos = polarToXY(coinAngle - 90, TRACK_R);
+      ctx.fillStyle = SK.coinText; ctx.font = 'bold 10px Orbitron,monospace';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('$', pos.x, pos.y + 0.5);
+      
+      return;
+    }
+
     const pos = polarToXY(coinAngle - 90, TRACK_R);
     const glow = ctx.createRadialGradient(pos.x, pos.y, 0, pos.x, pos.y, COIN_R * 1.6);
     glow.addColorStop(0, `${SK.coinGlow}.45)`); glow.addColorStop(0.6, `${SK.coinGlow}.15)`); glow.addColorStop(1, `${SK.coinGlow}0)`);
@@ -638,7 +677,9 @@ const SKIN_KEY  = 'cy_skin';
   function renderShopScreen() {
     const grid = document.getElementById('shop-grid'); if (!grid) return;
     const activeSkin = getActiveSkin();
-    grid.innerHTML = '';
+    
+    // SKINS SECTION
+    grid.innerHTML = '<div class="shop-section-title">🎨 TUS SKINS</div>';
     Object.entries(SKINS).forEach(([id, skin]) => {
       const owned = isOwned(id), active = id === activeSkin;
       const canBuy = !owned && getCredits() >= skin.cost;
@@ -656,15 +697,78 @@ const SKIN_KEY  = 'cy_skin';
         </button>`;
       grid.appendChild(card);
     });
+
+    // ADDONS SECTION
+    const tmpDiv = document.createElement('div');
+    tmpDiv.className = 'shop-section-title';
+    tmpDiv.textContent = '🎯 MEJORAS: GUÍAS DE ZONA';
+    grid.appendChild(tmpDiv);
+
+    Object.entries(ADDONS).forEach(([id, addon]) => {
+      const owned = userData.addons && userData.addons.includes(id);
+      const active = userData.activeAddons && userData.activeAddons.includes(id);
+      const unlocked = !addon.req || isBeaten(addon.req);
+      const canBuy = unlocked && !owned && getCredits() >= addon.cost;
+
+      const card = document.createElement('div');
+      card.className = `skin-card ${active ? 'skin-active' : ''} ${!unlocked ? 'locked' : ''}`;
+      
+      let btnHTML = '';
+      if (!unlocked) {
+        btnHTML = `<button class="skin-action-btn btn-cantbuy" disabled>🔒 REQUIERE ${addon.req.toUpperCase()}</button>`;
+      } else if (active) {
+        btnHTML = `<button class="addon-action-btn btn-active" data-id="${id}">✓ ACTIVADO</button>`;
+      } else if (owned) {
+        btnHTML = `<button class="addon-action-btn btn-owned" data-id="${id}">ACTIVAR</button>`;
+      } else {
+        btnHTML = `<button class="addon-action-btn ${canBuy ? '' : 'btn-cantbuy'}" data-id="${id}" ${canBuy ? '' : 'disabled'}>COMPRAR 🪙${addon.cost}</button>`;
+      }
+
+      card.innerHTML = `
+        <div class="addon-preview">🎯</div>
+        <div class="skin-name">${addon.name}</div>
+        <div class="skin-sub">${addon.sub}</div>
+        ${btnHTML}
+      `;
+      grid.appendChild(card);
+    });
+
+    // EVENT LISTENERS
     grid.querySelectorAll('.skin-action-btn:not([disabled])').forEach(btn => {
       btn.addEventListener('click', () => {
         const id = btn.dataset.skin;
+        if (!id) return;
         if (!isOwned(id) && SKINS[id].cost > 0) {
           if (getCredits() < SKINS[id].cost) return;
           spendCredits(SKINS[id].cost);
           addOwned(id);
         }
         applySkin(id);
+        updateCreditsDisplay();
+        renderShopScreen();
+      });
+    });
+
+    grid.querySelectorAll('.addon-action-btn:not([disabled])').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.id;
+        if (!userData.addons) userData.addons = [];
+        if (!userData.activeAddons) userData.activeAddons = [];
+
+        if (!userData.addons.includes(id)) {
+          if (getCredits() < ADDONS[id].cost) return;
+          spendCredits(ADDONS[id].cost);
+          userData.addons.push(id);
+          userData.activeAddons.push(id); // auto-activate
+        } else {
+          // Toggle activation
+          if (userData.activeAddons.includes(id)) {
+            userData.activeAddons = userData.activeAddons.filter(a => a !== id);
+          } else {
+            userData.activeAddons.push(id);
+          }
+        }
+        saveDataToCloud();
         updateCreditsDisplay();
         renderShopScreen();
       });
@@ -865,7 +969,9 @@ const SKIN_KEY  = 'cy_skin';
             beaten: loadedData.beaten || [],
             hs: loadedData.hs || {},
             stats: loadedData.stats || { gamesPlayed: 0, wins: 0, totalCoins: 0 },
-            quests: loadedData.quests || []
+            quests: loadedData.quests || [],
+            addons: loadedData.addons || [],
+            activeAddons: loadedData.activeAddons || []
           };
         } else {
           // If no doc exists (legacy creation or something failed), create it
