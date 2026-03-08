@@ -492,40 +492,40 @@ body::after {
 .diff-btn:active { transform: translateY(0) scale(0.97); }
 
 /* Fácil – verde */
-#diff-facil { border-color: rgba(57,255,20,0.25); }
-#diff-facil::before { background: rgba(57,255,20,0.08); }
-#diff-facil .diff-name { color: #39FF14; }
-#diff-facil.active {
+.diff-btn[data-difficulty="facil"] { border-color: rgba(57,255,20,0.25); }
+.diff-btn[data-difficulty="facil"]::before { background: rgba(57,255,20,0.08); }
+.diff-btn[data-difficulty="facil"] .diff-name { color: #39FF14; }
+.diff-btn[data-difficulty="facil"].active {
   border-color: #39FF14;
   background: rgba(57,255,20,0.15);
   box-shadow: 0 0 16px rgba(57,255,20,0.4), inset 0 0 12px rgba(57,255,20,0.1);
 }
 
 /* Normal – azul */
-#diff-normal { border-color: rgba(0,207,255,0.25); }
-#diff-normal::before { background: rgba(0,207,255,0.08); }
-#diff-normal .diff-name { color: var(--neon-blue); }
-#diff-normal.active {
+.diff-btn[data-difficulty="normal"] { border-color: rgba(0,207,255,0.25); }
+.diff-btn[data-difficulty="normal"]::before { background: rgba(0,207,255,0.08); }
+.diff-btn[data-difficulty="normal"] .diff-name { color: var(--neon-blue); }
+.diff-btn[data-difficulty="normal"].active {
   border-color: var(--neon-blue);
   background: rgba(0,207,255,0.15);
   box-shadow: 0 0 16px rgba(0,207,255,0.4), inset 0 0 12px rgba(0,207,255,0.1);
 }
 
 /* Difícil – naranja */
-#diff-dificil { border-color: rgba(255,140,0,0.25); }
-#diff-dificil::before { background: rgba(255,140,0,0.08); }
-#diff-dificil .diff-name { color: #FF8C00; }
-#diff-dificil.active {
+.diff-btn[data-difficulty="dificil"] { border-color: rgba(255,140,0,0.25); }
+.diff-btn[data-difficulty="dificil"]::before { background: rgba(255,140,0,0.08); }
+.diff-btn[data-difficulty="dificil"] .diff-name { color: #FF8C00; }
+.diff-btn[data-difficulty="dificil"].active {
   border-color: #FF8C00;
   background: rgba(255,140,0,0.15);
   box-shadow: 0 0 16px rgba(255,140,0,0.4), inset 0 0 12px rgba(255,140,0,0.1);
 }
 
 /* Extremo – rojo */
-#diff-extremo { border-color: rgba(255,58,92,0.25); }
-#diff-extremo::before { background: rgba(255,58,92,0.08); }
-#diff-extremo .diff-name { color: var(--neon-red); }
-#diff-extremo.active {
+.diff-btn[data-difficulty="extremo"] { border-color: rgba(255,58,92,0.25); }
+.diff-btn[data-difficulty="extremo"]::before { background: rgba(255,58,92,0.08); }
+.diff-btn[data-difficulty="extremo"] .diff-name { color: var(--neon-red); }
+.diff-btn[data-difficulty="extremo"].active {
   border-color: var(--neon-red);
   background: rgba(255,58,92,0.15);
   box-shadow: 0 0 16px rgba(255,58,92,0.4), inset 0 0 12px rgba(255,58,92,0.1);
@@ -567,6 +567,90 @@ body::after {
 .hud-difficulty.normal  { color: var(--neon-blue); border: 1px solid rgba(0,207,255,0.4); background: rgba(0,207,255,0.08); }
 .hud-difficulty.dificil { color: #FF8C00; border: 1px solid rgba(255,140,0,0.4); background: rgba(255,140,0,0.08); }
 .hud-difficulty.extremo { color: var(--neon-red); border: 1px solid rgba(255,58,92,0.4); background: rgba(255,58,92,0.08); }
+
+/* ── Credits Strip (start screen) ── */
+.credits-strip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-arcade);
+  padding: 8px 20px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,215,0,0.25);
+  background: rgba(255,215,0,0.06);
+  transition: all 0.3s ease;
+}
+.credits-strip-icon { font-size: 18px; }
+.credits-strip-val {
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--neon-gold);
+  text-shadow: 0 0 12px rgba(255,215,0,0.5);
+  min-width: 40px;
+  text-align: center;
+}
+.credits-strip-label {
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: rgba(255,215,0,0.55);
+  line-height: 1.4;
+}
+.credits-strip.low {
+  border-color: rgba(255,58,92,0.45);
+  background: rgba(255,58,92,0.08);
+  animation: dangerPulse 1.2s ease-in-out infinite;
+}
+.credits-strip.low .credits-strip-val {
+  color: var(--neon-red);
+  text-shadow: 0 0 12px rgba(255,58,92,0.6);
+}
+.credits-strip.low .credits-strip-label { color: rgba(255,58,92,0.6); }
+
+/* ── HUD credits mini (in-game) ── */
+.hud-credits-mini {
+  font-family: var(--font-arcade);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--neon-gold);
+  opacity: 0.85;
+  letter-spacing: 1px;
+  margin-top: 4px;
+}
+
+/* ── Credits summary (result screens) ── */
+.credits-summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-arcade);
+  font-size: 11px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,58,92,0.25);
+  background: rgba(255,58,92,0.06);
+  color: var(--text-dim);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.credits-summary.win {
+  border-color: rgba(255,215,0,0.3);
+  background: rgba(255,215,0,0.07);
+}
+.cs-earned { color: var(--neon-green); font-size: 12px; }
+.credits-summary.win .cs-earned { color: var(--neon-gold); }
+.cs-sep { color: var(--text-dim); opacity: 0.4; }
+.cs-balance-val {
+  color: var(--neon-cyan);
+  font-size: 13px;
+  font-weight: 700;
+  text-shadow: 0 0 8px var(--neon-cyan);
+}
+
+/* ── Compact difficulty selector (result screens) ── */
+.difficulty-selector.compact .diff-btn {
+  padding: 8px 4px;
+}
+.difficulty-selector.compact .diff-desc { display: none; }
 
 /* ── Responsive ── */
 @media (max-height: 700px) {

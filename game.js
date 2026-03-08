@@ -25,6 +25,28 @@
   };
   let currentDifficulty = 'normal'; // selected by the player
 
+  // ── Credit System ─────────────────────────
+  // Each game costs 10cr. Each coin collected earns 1cr.
+  // Win = 25cr earned → net +15. Die at 10 coins = break-even.
+  // Starting balance: 100cr (10 free games). Emergency top-up: +20cr.
+  const CREDITS_PLAY_COST = 10;
+  const CREDITS_PER_COIN  = 1;
+  const CREDITS_BONUS     = 20;   // auto top-up when balance < play cost
+  const CREDITS_KEY       = 'cyclone_credits';
+  const CREDITS_START     = 100;
+
+  function getCredits() {
+    const v = sessionStorage.getItem(CREDITS_KEY);
+    return v !== null ? parseInt(v, 10) : CREDITS_START;
+  }
+  function setCredits(n) {
+    const val = Math.max(0, Math.round(n));
+    sessionStorage.setItem(CREDITS_KEY, val);
+    return val;
+  }
+  function addCredits(n)   { return setCredits(getCredits() + n); }
+  function spendCredits(n) { return setCredits(getCredits() - n); }
+
   // ── State ─────────────────────────────────────
   const state = {
     screen: 'start', // 'start' | 'game' | 'gameover' | 'win'
@@ -75,17 +97,24 @@
   })();
 
   // ── Difficulty selector UI ───────────────────
+  // All .diff-btn elements across ALL screens are handled here.
+  // Clicking any button syncs the active state across all groups
+  // by data-difficulty attribute, so result-screen selectors stay in sync.
   const diffBtns = document.querySelectorAll('.diff-btn');
   diffBtns.forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
       currentDifficulty = btn.dataset.difficulty;
       diffBtns.forEach(b => {
-        b.classList.toggle('active', b === btn);
-        b.setAttribute('aria-pressed', b === btn ? 'true' : 'false');
+        const isSelected = b.dataset.difficulty === currentDifficulty;
+        b.classList.toggle('active', isSelected);
+        b.setAttribute('aria-pressed', isSelected ? 'true' : 'false');
       });
     });
   });
+
+  // Initialise credits display on load
+  updateCreditsDisplay();
 
   // ── Canvas dimensions (logical) ──────────────
   const W = 420, H = 420;
@@ -253,8 +282,14 @@
 
   // ── Game init ─────────────────────────────────
   function startGame() {
-    state.arrowAngle = -90;       // top of circle
-    state.direction = 1;         // start clockwise
+    // ─ Credit check: give emergency top-up if broke ─
+    if (getCredits() < CREDITS_PLAY_COST) {
+      addCredits(CREDITS_BONUS);
+    }
+    spendCredits(CREDITS_PLAY_COST);
+
+    state.arrowAngle = -90;
+    state.direction = 1;
     state.speed = BASE_SPEED;
     state.speedMult = 1.0;
     state.hitsLeft = TOTAL_COINS;
@@ -262,8 +297,9 @@
     state.running = true;
     state.lastTime = null;
     state.inputLocked = false;
-    placeCoin();                   // sets coinAngle, coinOffset, arrowAngleAtCoin
+    placeCoin();
     updateHUD();
+    updateCreditsDisplay();
     // Show difficulty badge in HUD
     const diff = DIFFICULTIES[currentDifficulty];
     hudDiffBadge.textContent = diff.label;
@@ -514,6 +550,9 @@
     state.speed *= (1 + DIFFICULTIES[currentDifficulty].speedInc);
     state.speedMult = state.speed / BASE_SPEED;
 
+    // Earn one credit per coin collected
+    addCredits(CREDITS_PER_COIN);
+
     // Reverse direction on every successful hit (like the real arcade)
     state.direction *= -1;
 
@@ -568,16 +607,41 @@
     counterEl.textContent = state.hitsLeft;
     hudSpeed.textContent = state.speedMult.toFixed(1) + 'x';
     hudHits.textContent = state.hitsScored;
+    // Update in-game credits display
+    const credVal = document.getElementById('hud-credits-val');
+    if (credVal) credVal.textContent = getCredits();
+  }
+
+  function updateCreditsDisplay() {
+    const c = getCredits();
+    // Start screen strip
+    const strip = document.getElementById('start-credits-strip');
+    const stripVal = document.getElementById('start-credits-val');
+    if (stripVal) stripVal.textContent = c;
+    if (strip) strip.classList.toggle('low', c < CREDITS_PLAY_COST * 2);
+    // In-game HUD
+    const hudVal = document.getElementById('hud-credits-val');
+    if (hudVal) hudVal.textContent = c;
   }
 
   // ── End screens ───────────────────────────────
   function showGameOver() {
     goHits.textContent = state.hitsScored;
     goSpeed.textContent = state.speedMult.toFixed(1) + 'x';
+    // Credits summary
+    const earned = state.hitsScored * CREDITS_PER_COIN;
+    document.getElementById('go-credits-earned').textContent = earned;
+    document.getElementById('go-credits-balance').textContent = getCredits();
+    updateCreditsDisplay();
     showScreen('gameover');
   }
 
   function showWin() {
+    // Credits summary (all 25 coins already credited in handleHit)
+    const earned = TOTAL_COINS * CREDITS_PER_COIN;
+    document.getElementById('win-credits-earned').textContent = earned;
+    document.getElementById('win-credits-balance').textContent = getCredits();
+    updateCreditsDisplay();
     playWinSound();
     spawnParticles();
     showScreen('win');
