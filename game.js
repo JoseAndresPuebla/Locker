@@ -3,36 +3,93 @@
    v3: Skins + Endless Mode + Credits
    ═══════════════════════════════════════════════ */
 
-(function () {
-  'use strict';
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
 
-  // ── Constants ────────────────────────────────────────────────────────────
-  const TOTAL_COINS     = 25;
-  const BASE_SPEED      = 140;
-  const TRACK_SEGMENTS  = 48;
-  const TRAIL_LENGTH    = 6;
-  const COIN_MIN_OFFSET = 120;
-  const COIN_MAX_OFFSET = 240;
+const firebaseConfig = {
+  apiKey: "AIzaSyCpgy8GBR8JYf_IM0K8jlOrAuIm6DZxa6w",
+  authDomain: "cyclone-arcade.firebaseapp.com",
+  projectId: "cyclone-arcade",
+  storageBucket: "cyclone-arcade.firebasestorage.app",
+  messagingSenderId: "398592990567",
+  appId: "1:398592990567:web:48f7660bd148b75fe963c2"
+};
 
-  const DIFFICULTIES = {
-    facil:   { hitZone: 30,  speedInc: 0.05, label: 'FÁCIL'   },
-    normal:  { hitZone: 22,  speedInc: 0.05, label: 'NORMAL'  },
-    dificil: { hitZone: 15,  speedInc: 0.05, label: 'DIFÍCIL' },
-    extremo: { hitZone: 15,  speedInc: 0.10, label: 'EXTREMO' },
-  };
-  let currentDifficulty = 'normal';
-  let endlessMode = false;
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-  // ── Credit System ─────────────────────────────────────────────────────────
-  const CPC = 10, CPcoin = 1, CBONUS = 20, CKEY = 'cy_cr', CSTART = 100;
-  const getCredits  = () => { const v = sessionStorage.getItem(CKEY); return v !== null ? parseInt(v, 10) : CSTART; };
-  const setCredits  = n  => { const v = Math.max(0, Math.round(n)); sessionStorage.setItem(CKEY, v); return v; };
-  const addCredits  = n  => setCredits(getCredits() + n);
-  const spendCredits= n  => setCredits(getCredits() - n);
+// ── Constants ────────────────────────────────────────────────────────────
+const TOTAL_COINS     = 25;
+const BASE_SPEED      = 140;
+const TRACK_SEGMENTS  = 48;
+const TRAIL_LENGTH    = 6;
+const COIN_MIN_OFFSET = 120;
+const COIN_MAX_OFFSET = 240;
 
-  // ── Skin System ───────────────────────────────────────────────────────────
-  const SKIN_KEY  = 'cy_skin';
-  const OWNED_KEY = 'cy_owned';
+const DIFFICULTIES = {
+  facil:   { hitZone: 30,  speedInc: 0.05, label: 'FÁCIL'   },
+  normal:  { hitZone: 22,  speedInc: 0.05, label: 'NORMAL'  },
+  dificil: { hitZone: 15,  speedInc: 0.05, label: 'DIFÍCIL' },
+  extremo: { hitZone: 15,  speedInc: 0.10, label: 'EXTREMO' },
+};
+let currentDifficulty = 'normal';
+let endlessMode = false;
+
+// ── Cloud State ───────────────────────────────────────────────────────────
+let currentUser = null;
+let userData = {
+  credits: 100,
+  owned: ['cyclone'],
+  beaten: [],
+  hs: {},
+  stats: { gamesPlayed: 0, wins: 0, totalCoins: 0 },
+  quests: [] // array of { id, title, type, target, progress, reward, claimed }
+};
+
+// ── Quests Templates ──────────────────────────────────────────────────────
+const QUESTS_POOL = [
+  { id: 'q_play', title: 'Juega 5 partidas', type: 'play', target: 5, reward: 20 },
+  { id: 'q_win', title: 'Gana 1 partida', type: 'win', target: 1, reward: 50 },
+  { id: 'q_coins', title: 'Recoge 50 monedas totales', type: 'coins', target: 50, reward: 30 }
+];
+
+function checkAndInitQuests() {
+  if (userData.quests.length === 0) {
+    userData.quests = QUESTS_POOL.map(q => ({ ...q, progress: 0, claimed: false }));
+    saveDataToCloud();
+  }
+}
+
+function addQuestProgress(type, amount = 1) {
+  if (!userData.quests) return;
+  let updated = false;
+  userData.quests.forEach(q => {
+    if (q.type === type && q.progress < q.target) {
+      q.progress = Math.min(q.target, q.progress + amount);
+      updated = true;
+    }
+  });
+  if (updated) saveDataToCloud();
+}
+
+async function saveDataToCloud() {
+  if (!currentUser) return;
+  try {
+    await setDoc(doc(db, "users", currentUser.uid), userData);
+  } catch(e) { console.error("Error saving data:", e); }
+}
+
+// ── Credit System ─────────────────────────────────────────────────────────
+const CPC = 10, CPcoin = 1, CBONUS = 20;
+const getCredits  = () => userData.credits;
+const setCredits  = n  => { userData.credits = Math.max(0, Math.round(n)); saveDataToCloud(); return userData.credits; };
+const addCredits  = n  => setCredits(getCredits() + n);
+const spendCredits= n  => setCredits(getCredits() - n);
+
+// ── Skin System ───────────────────────────────────────────────────────────
+const SKIN_KEY  = 'cy_skin';
 
   const SKINS = {
     cyclone: {
@@ -118,9 +175,9 @@
   let SK = SKINS.cyclone.canvas; // active skin colors
 
   const getActiveSkin = ()  => sessionStorage.getItem(SKIN_KEY) || 'cyclone';
-  const getOwned      = ()  => { try { return JSON.parse(sessionStorage.getItem(OWNED_KEY) || '["cyclone"]'); } catch(e) { return ['cyclone']; } };
-  const addOwned      = id  => { const o = getOwned(); if (!o.includes(id)) { o.push(id); sessionStorage.setItem(OWNED_KEY, JSON.stringify(o)); } };
-  const isOwned       = id  => SKINS[id].cost === 0 || getOwned().includes(id);
+  const getOwned      = ()  => userData.owned;
+  const addOwned      = id  => { if (!userData.owned.includes(id)) { userData.owned.push(id); saveDataToCloud(); } };
+  const isOwned       = id  => SKINS[id].cost === 0 || userData.owned.includes(id);
 
   function applySkin(id) {
     if (!SKINS[id]) id = 'cyclone';
@@ -131,12 +188,11 @@
   }
 
   // ── Endless System ────────────────────────────────────────────────────────
-  const BEATEN_KEY = 'cy_beaten', HS_PRE = 'cy_hs_';
-  const getBeaten  = ()     => { try { return JSON.parse(sessionStorage.getItem(BEATEN_KEY) || '[]'); } catch(e) { return []; } };
-  const markBeaten = d      => { const b = getBeaten(); if (!b.includes(d)) { b.push(d); sessionStorage.setItem(BEATEN_KEY, JSON.stringify(b)); } };
-  const isBeaten   = d      => getBeaten().includes(d);
-  const getHS      = d      => parseInt(sessionStorage.getItem(HS_PRE + d) || '0', 10);
-  const updateHS   = (d, s) => { if (s > getHS(d)) sessionStorage.setItem(HS_PRE + d, s); };
+  const getBeaten  = ()     => userData.beaten;
+  const markBeaten = d      => { if (!userData.beaten.includes(d)) { userData.beaten.push(d); saveDataToCloud(); } };
+  const isBeaten   = d      => userData.beaten.includes(d);
+  const getHS      = d      => userData.hs[d] || 0;
+  const updateHS   = (d, s) => { if (s > getHS(d)) { userData.hs[d] = s; saveDataToCloud(); } };
 
   // ── State ─────────────────────────────────────────────────────────────────
   const state = {
@@ -149,11 +205,13 @@
 
   // ── DOM Refs ──────────────────────────────────────────────────────────────
   const screens = {
+    auth:     document.getElementById('screen-auth'),
     start:    document.getElementById('screen-start'),
     game:     document.getElementById('screen-game'),
     gameover: document.getElementById('screen-gameover'),
     win:      document.getElementById('screen-win'),
     shop:     document.getElementById('screen-shop'),
+    profile:  document.getElementById('screen-profile'),
   };
   const canvas      = document.getElementById('game-canvas');
   const ctx         = canvas.getContext('2d');
@@ -222,11 +280,7 @@
   const btnET = document.getElementById('btn-endless-toggle');
   if (btnET) btnET.addEventListener('click', e => { e.stopPropagation(); endlessMode = !endlessMode; updateEndlessUI(); });
 
-  // ── Init ──────────────────────────────────────────────────────────────────
-  applySkin(getActiveSkin());
-  updateCreditsDisplay();
-  updateEndlessUI();
-  syncDiffBtns();
+  // App setup now deferred to onAuthStateChanged
 
   // ── Canvas Dimensions ─────────────────────────────────────────────────────
   const W = 420, H = 420, CX = W / 2, CY = H / 2;
@@ -303,6 +357,13 @@
   function startGame() {
     if (getCredits() < CPC) addCredits(CBONUS);
     spendCredits(CPC);
+    
+    // Stats & Quests tracker
+    if (!userData.stats) userData.stats = { gamesPlayed: 0, wins: 0, totalCoins: 0 };
+    userData.stats.gamesPlayed++;
+    saveDataToCloud();
+    addQuestProgress('play', 1);
+
     state.arrowAngle = -90; state.direction = 1; state.speed = BASE_SPEED;
     state.speedMult = 1.0; state.hitsLeft = TOTAL_COINS; state.hitsScored = 0;
     state.endless = endlessMode; state.running = true; state.lastTime = null; state.inputLocked = false;
@@ -432,7 +493,14 @@
     state.speed *= (1 + DIFFICULTIES[currentDifficulty].speedInc);
     state.speedMult = state.speed / BASE_SPEED;
     state.direction *= -1;
+    
+    // Core game state
     addCredits(CPcoin);
+    if (!userData.stats) userData.stats = { gamesPlayed: 0, wins: 0, totalCoins: 0 };
+    userData.stats.totalCoins++;
+    saveDataToCloud();
+    addQuestProgress('coins', 1);
+
     playHitSound(state.hitsScored);
     triggerFeedback('hit');
     bumpCounter();
@@ -513,6 +581,12 @@
     markBeaten(currentDifficulty);
     updateEndlessUI();
 
+    // Stats & Quests tracker
+    if (!userData.stats) userData.stats = { gamesPlayed: 0, wins: 0, totalCoins: 0 };
+    userData.stats.wins++;
+    saveDataToCloud();
+    addQuestProgress('win', 1);
+
     const earned = TOTAL_COINS * CPcoin;
     document.getElementById('win-credits-earned').textContent = earned;
     document.getElementById('win-credits-balance').textContent = getCredits();
@@ -584,6 +658,66 @@
     });
   }
 
+  // ── Profile & Quests ──────────────────────────────────────────────────────
+  function openProfile() {
+    checkAndInitQuests();
+    renderProfileScreen();
+    showScreen('profile');
+  }
+
+  function renderProfileScreen() {
+    document.getElementById('profile-credits-val').textContent = getCredits();
+    
+    // Render Stats
+    const st = userData.stats || { gamesPlayed: 0, wins: 0, totalCoins: 0 };
+    document.getElementById('st-games').textContent = st.gamesPlayed;
+    document.getElementById('st-wins').textContent = st.wins;
+    document.getElementById('st-coins').textContent = st.totalCoins;
+    
+    const wr = st.gamesPlayed > 0 ? Math.round((st.wins / st.gamesPlayed) * 100) : 0;
+    document.getElementById('st-wr').textContent = wr + '%';
+
+    // Render Quests
+    const qContainer = document.getElementById('quests-container');
+    qContainer.innerHTML = '';
+    
+    (userData.quests || []).forEach((q, idx) => {
+      const isDone = q.progress >= q.target;
+      const pct = Math.min(100, Math.round((q.progress / q.target) * 100));
+      
+      const el = document.createElement('div');
+      el.className = `quest-card ${isDone && !q.claimed ? 'q-done' : ''}`;
+      el.innerHTML = `
+        <div class="q-title">${q.title}</div>
+        <div class="q-info">
+          <span>${q.progress} / ${q.target}</span>
+          <span class="q-reward">🪙 +${q.reward}</span>
+        </div>
+        <div class="q-progress-bar">
+          <div class="q-progress-fill" style="width: ${pct}%"></div>
+        </div>
+        <button class="btn-claim ${!isDone || q.claimed ? 'claimed' : ''}" data-idx="${idx}" ${!isDone || q.claimed ? 'disabled' : ''}>
+          ${q.claimed ? 'RECLAMADO' : (isDone ? 'RECLAMAR' : 'EN PROGRESO')}
+        </button>
+      `;
+      qContainer.appendChild(el);
+    });
+
+    // Delegate claim clicks
+    qContainer.querySelectorAll('.btn-claim:not([disabled])').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const idx = e.target.dataset.idx;
+        const q = userData.quests[idx];
+        if (q && q.progress >= q.target && !q.claimed) {
+          q.claimed = true;
+          addCredits(q.reward);
+          saveDataToCloud();
+          renderProfileScreen();
+        }
+      });
+    });
+  }
+
   // ── Input ─────────────────────────────────────────────────────────────────
   function onPlayerInput() {
     if (state.screen !== 'game' || !state.running || state.inputLocked) return;
@@ -603,6 +737,9 @@
   document.getElementById('btn-shop-back')?.addEventListener('click', e => { e.stopPropagation(); showScreen('start'); updateEndlessUI(); });
   document.getElementById('btn-go-shop')?.addEventListener('click',   e => { e.stopPropagation(); openShop(); });
   document.getElementById('btn-win-shop')?.addEventListener('click',  e => { e.stopPropagation(); openShop(); });
+
+  document.getElementById('btn-profile')?.addEventListener('click',      e => { e.stopPropagation(); openProfile(); });
+  document.getElementById('btn-profile-back')?.addEventListener('click', e => { e.stopPropagation(); showScreen('start'); });
 
   document.addEventListener('keydown', e => {
     if (e.code === 'Space' || e.key === ' ') {
@@ -633,4 +770,110 @@
     btnPlayAgain.addEventListener('click', stop);
   })();
 
-})();
+  // ── AUTHENTICATION & APP BOOTSTRAP ─────────────────────────────────────────
+
+  const authForm = document.getElementById('auth-form');
+  const authEmail = document.getElementById('auth-email');
+  const authPass = document.getElementById('auth-pass');
+  const authError = document.getElementById('auth-error');
+  const btnRegister = document.getElementById('btn-register');
+  const btnLogout = document.getElementById('btn-logout');
+  const btnGoogle = document.getElementById('btn-google');
+
+  function showAuthError(msg) {
+    authError.textContent = msg;
+    authError.style.display = 'block';
+  }
+
+  // Register Event
+  if (btnRegister) {
+    btnRegister.addEventListener('click', async (e) => {
+      e.preventDefault();
+      if (!authEmail.value || !authPass.value) { showAuthError("Rellena email y contraseña"); return; }
+      try {
+        const u = await createUserWithEmailAndPassword(auth, authEmail.value, authPass.value);
+        await setDoc(doc(db, "users", u.user.uid), userData); // Upload initial full DB object
+      } catch (err) {
+        if(err.code === 'auth/email-already-in-use') showAuthError("Ese email ya está registrado.");
+        else if (err.code === 'auth/weak-password') showAuthError("Contraseña muy débil (mín. 6 chars).");
+        else showAuthError(err.message);
+      }
+    });
+  }
+
+  // Login Event
+  if (authForm) {
+    authForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      try {
+        await signInWithEmailAndPassword(auth, authEmail.value, authPass.value);
+      } catch (err) {
+        showAuthError("Credenciales incorrectas o usuario inexistente.");
+      }
+    });
+  }
+
+  // Google Login Event
+  if (btnGoogle) {
+    btnGoogle.addEventListener('click', async () => {
+      try {
+        const provider = new GoogleAuthProvider();
+        await signInWithPopup(auth, provider);
+        // onAuthStateChanged handled the rest
+      } catch (err) {
+        showAuthError("Error al iniciar sesión con Google.");
+        console.error(err);
+      }
+    });
+  }
+
+  // Logout Event
+  if (btnLogout) {
+    btnLogout.addEventListener('click', () => {
+      signOut(auth);
+    });
+  }
+
+  // Listen to Auth State
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      // User is logged in
+      currentUser = user;
+      
+      try {
+        // Download cloud save
+        const docSnap = await getDoc(doc(db, "users", user.uid));
+        if (docSnap.exists()) {
+          const loadedData = docSnap.data();
+          // Merge avoiding undefined properties breaking the structure
+          userData = {
+            credits: loadedData.credits !== undefined ? loadedData.credits : 100,
+            owned: loadedData.owned || ['cyclone'],
+            beaten: loadedData.beaten || [],
+            hs: loadedData.hs || {},
+            stats: loadedData.stats || { gamesPlayed: 0, wins: 0, totalCoins: 0 },
+            quests: loadedData.quests || []
+          };
+        } else {
+          // If no doc exists (legacy creation or something failed), create it
+          await setDoc(doc(db, "users", user.uid), userData);
+        }
+      } catch(e) {
+        console.error("No se pudieron cargar los datos", e);
+      }
+
+      // Initialize App HUD
+      applySkin(getActiveSkin());
+      updateCreditsDisplay();
+      updateEndlessUI();
+      syncDiffBtns();
+
+      showScreen('start');
+    } else {
+      // User is logged out
+      currentUser = null;
+      if(authError) authError.style.display = 'none';
+      if(authForm) authForm.reset();
+      showScreen('auth');
+    }
+  });
