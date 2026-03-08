@@ -10,12 +10,20 @@
   // ── Constants ────────────────────────────────
   const TOTAL_COINS = 25;        // coins to collect to win
   const BASE_SPEED = 140;       // degrees per second (initial)
-  const SPEED_INCREMENT = 0.05;      // +5% per hit
-  const HIT_ZONE_DEG = 22;        // ±degrees tolerance
   const TRACK_SEGMENTS = 48;        // LED segments around ring
   const TRAIL_LENGTH = 6;         // arrow trail segments
   const COIN_MIN_OFFSET = 120;       // minimum degrees ahead for coin placement
   const COIN_MAX_OFFSET = 240;       // maximum degrees ahead for coin placement
+
+  // ── Difficulty presets ───────────────────────
+  // hitZone: ±degrees tolerance | speedInc: multiplier added per hit
+  const DIFFICULTIES = {
+    facil:   { hitZone: 30,   speedInc: 0.05, label: 'FÁCIL'  },
+    normal:  { hitZone: 22,   speedInc: 0.05, label: 'NORMAL' },
+    dificil: { hitZone: 15,   speedInc: 0.05, label: 'DIFÍCIL' },
+    extremo: { hitZone: 15,   speedInc: 0.10, label: 'EXTREMO' },
+  };
+  let currentDifficulty = 'normal'; // selected by the player
 
   // ── State ─────────────────────────────────────
   const state = {
@@ -55,6 +63,29 @@
   const goHits = document.getElementById('go-hits');
   const goSpeed = document.getElementById('go-speed');
   const winParticles = document.getElementById('win-particles');
+
+  // HUD badge that shows the current difficulty during gameplay
+  const hudDiffBadge = (() => {
+    const el = document.createElement('div');
+    el.id = 'hud-diff-badge';
+    el.className = 'hud-difficulty';
+    el.style.display = 'none';
+    document.getElementById('screen-game').appendChild(el);
+    return el;
+  })();
+
+  // ── Difficulty selector UI ───────────────────
+  const diffBtns = document.querySelectorAll('.diff-btn');
+  diffBtns.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      currentDifficulty = btn.dataset.difficulty;
+      diffBtns.forEach(b => {
+        b.classList.toggle('active', b === btn);
+        b.setAttribute('aria-pressed', b === btn ? 'true' : 'false');
+      });
+    });
+  });
 
   // ── Canvas dimensions (logical) ──────────────
   const W = 420, H = 420;
@@ -233,6 +264,11 @@
     state.inputLocked = false;
     placeCoin();                   // sets coinAngle, coinOffset, arrowAngleAtCoin
     updateHUD();
+    // Show difficulty badge in HUD
+    const diff = DIFFICULTIES[currentDifficulty];
+    hudDiffBadge.textContent = diff.label;
+    hudDiffBadge.className = 'hud-difficulty ' + currentDifficulty;
+    hudDiffBadge.style.display = 'block';
     showScreen('game');
     if (state.rafId) cancelAnimationFrame(state.rafId);
     state.rafId = requestAnimationFrame(gameLoop);
@@ -267,7 +303,7 @@
 
       // The coin sits at exactly `coinOffset` degrees of travel.
       // If traveled > coinOffset + HIT_ZONE, the player missed it.
-      if (traveled > state.coinOffset + HIT_ZONE_DEG) {
+      if (traveled > state.coinOffset + DIFFICULTIES[currentDifficulty].hitZone) {
         handleMiss('passed');
         return;
       }
@@ -475,7 +511,7 @@
 
     state.hitsScored++;
     state.hitsLeft--;
-    state.speed *= (1 + SPEED_INCREMENT);
+    state.speed *= (1 + DIFFICULTIES[currentDifficulty].speedInc);
     state.speedMult = state.speed / BASE_SPEED;
 
     // Reverse direction on every successful hit (like the real arcade)
@@ -576,7 +612,7 @@
     const normCoin = normalizeAngle(state.coinAngle);
     const diff = Math.abs(shortestAngleDiff(normArrow, normCoin));
 
-    if (diff <= HIT_ZONE_DEG) {
+    if (diff <= DIFFICULTIES[currentDifficulty].hitZone) {
       handleHit();
     } else {
       handleMiss();

@@ -24,6 +24,29 @@
         <p>Si fallas o pasas de largo… <span class="danger">GAME OVER</span></p>
         <p>Acierta <strong>25 veces</strong> para ganar 🏆</p>
       </div>
+
+      <div class="difficulty-selector" role="group" aria-label="Selección de dificultad">
+        <div class="difficulty-label">DIFICULTAD</div>
+        <div class="difficulty-options">
+          <button class="diff-btn" id="diff-facil" data-difficulty="facil" aria-pressed="false">
+            <span class="diff-name">FÁCIL</span>
+            <span class="diff-desc">Zona amplia</span>
+          </button>
+          <button class="diff-btn active" id="diff-normal" data-difficulty="normal" aria-pressed="true">
+            <span class="diff-name">NORMAL</span>
+            <span class="diff-desc">Estándar</span>
+          </button>
+          <button class="diff-btn" id="diff-dificil" data-difficulty="dificil" aria-pressed="false">
+            <span class="diff-name">DIFÍCIL</span>
+            <span class="diff-desc">Zona ajustada</span>
+          </button>
+          <button class="diff-btn diff-extreme" id="diff-extremo" data-difficulty="extremo" aria-pressed="false">
+            <span class="diff-name">EXTREMO</span>
+            <span class="diff-desc">Máxima presión</span>
+          </button>
+        </div>
+      </div>
+
       <div class="key-hints">
         <span class="key">ESPACIO</span> <span class="key">CLICK</span> <span class="key">TAP</span>
       </div>

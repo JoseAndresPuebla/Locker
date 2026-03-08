@@ -444,6 +444,130 @@ body::after {
   100%      { transform: translateY(110vh) rotate(720deg); opacity: 0; }
 }
 
+/* ── Difficulty Selector ── */
+.difficulty-selector {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.difficulty-label {
+  font-family: var(--font-arcade);
+  font-size: 10px;
+  letter-spacing: 4px;
+  color: var(--text-dim);
+}
+.difficulty-options {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  width: 100%;
+}
+.diff-btn {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 12px 6px;
+  border-radius: 10px;
+  border: 1px solid rgba(0,207,255,0.2);
+  background: rgba(0,207,255,0.05);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  overflow: hidden;
+}
+.diff-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  border-radius: inherit;
+}
+.diff-btn:hover::before { opacity: 1; }
+.diff-btn:hover { transform: translateY(-2px); }
+.diff-btn:active { transform: translateY(0) scale(0.97); }
+
+/* Fácil – verde */
+#diff-facil { border-color: rgba(57,255,20,0.25); }
+#diff-facil::before { background: rgba(57,255,20,0.08); }
+#diff-facil .diff-name { color: #39FF14; }
+#diff-facil.active {
+  border-color: #39FF14;
+  background: rgba(57,255,20,0.15);
+  box-shadow: 0 0 16px rgba(57,255,20,0.4), inset 0 0 12px rgba(57,255,20,0.1);
+}
+
+/* Normal – azul */
+#diff-normal { border-color: rgba(0,207,255,0.25); }
+#diff-normal::before { background: rgba(0,207,255,0.08); }
+#diff-normal .diff-name { color: var(--neon-blue); }
+#diff-normal.active {
+  border-color: var(--neon-blue);
+  background: rgba(0,207,255,0.15);
+  box-shadow: 0 0 16px rgba(0,207,255,0.4), inset 0 0 12px rgba(0,207,255,0.1);
+}
+
+/* Difícil – naranja */
+#diff-dificil { border-color: rgba(255,140,0,0.25); }
+#diff-dificil::before { background: rgba(255,140,0,0.08); }
+#diff-dificil .diff-name { color: #FF8C00; }
+#diff-dificil.active {
+  border-color: #FF8C00;
+  background: rgba(255,140,0,0.15);
+  box-shadow: 0 0 16px rgba(255,140,0,0.4), inset 0 0 12px rgba(255,140,0,0.1);
+}
+
+/* Extremo – rojo */
+#diff-extremo { border-color: rgba(255,58,92,0.25); }
+#diff-extremo::before { background: rgba(255,58,92,0.08); }
+#diff-extremo .diff-name { color: var(--neon-red); }
+#diff-extremo.active {
+  border-color: var(--neon-red);
+  background: rgba(255,58,92,0.15);
+  box-shadow: 0 0 16px rgba(255,58,92,0.4), inset 0 0 12px rgba(255,58,92,0.1);
+  animation: extremePulse 1.4s ease-in-out infinite;
+}
+@keyframes extremePulse {
+  0%,100% { box-shadow: 0 0 16px rgba(255,58,92,0.4), inset 0 0 12px rgba(255,58,92,0.1); }
+  50%      { box-shadow: 0 0 28px rgba(255,58,92,0.7), inset 0 0 18px rgba(255,58,92,0.2); }
+}
+
+.diff-name {
+  font-family: var(--font-arcade);
+  font-size: clamp(8px, 2vw, 10px);
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+.diff-desc {
+  font-family: var(--font-ui);
+  font-size: clamp(9px, 1.8vw, 11px);
+  color: var(--text-dim);
+  font-weight: 500;
+}
+
+/* HUD badge de dificultad (durante la partida) */
+.hud-difficulty {
+  font-family: var(--font-arcade);
+  font-size: 8px;
+  letter-spacing: 1.5px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-weight: 700;
+  position: fixed;
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 21;
+}
+.hud-difficulty.facil   { color: #39FF14; border: 1px solid rgba(57,255,20,0.4); background: rgba(57,255,20,0.08); }
+.hud-difficulty.normal  { color: var(--neon-blue); border: 1px solid rgba(0,207,255,0.4); background: rgba(0,207,255,0.08); }
+.hud-difficulty.dificil { color: #FF8C00; border: 1px solid rgba(255,140,0,0.4); background: rgba(255,140,0,0.08); }
+.hud-difficulty.extremo { color: var(--neon-red); border: 1px solid rgba(255,58,92,0.4); background: rgba(255,58,92,0.08); }
+
 /* ── Responsive ── */
 @media (max-height: 700px) {
   .canvas-wrapper { margin-top: 70px; }
