@@ -170,6 +170,19 @@ const SKIN_KEY  = 'cy_skin';
         rA: '#00E5FF', rB: '#FF4081', rGlow: 'rgba(255,255,255,0.6)',
       }
     },
+    crt: {
+      name: 'CRT OVERDRIVE', sub: '📺 VHS GLITCH', cost: 500, cls: 'skin-crt',
+      canvas: {
+        track: [0, 255, 170], arrow: '#00FFAA', arrowGlow: 'rgba(0,255,170,',
+        arrowHead: '#FFFFFF', arrowWings: 'rgba(0,255,170,0.8)',
+        coinFill: '#FF0055', coinDark: '#880022', coinLight: '#FFAABB',
+        coinGlow: 'rgba(255,0,85,', coinText: 'rgba(255,255,255,0.9)',
+        bg1: 'rgba(2,10,5,0.95)', bg2: 'rgba(1,5,2,0.98)', bg3: 'rgba(0,0,0,1)',
+        cIn: '#002211', cMid: '#001108', cOut: '#000804',
+        cGlow: 'rgba(0,255,170,0.3)', cDots: 'rgba(0,255,170,0.5)',
+        rA: '#005533', rB: '#00aa66', rGlow: 'rgba(0,255,170,0.5)',
+      }
+    },
   };
 
   let SK = SKINS.cyclone.canvas; // active skin colors

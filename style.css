@@ -808,6 +808,78 @@ body.skin-candy .cs-earned { color: #FF4081; font-weight: bold; }
 body.skin-candy .credits-summary.win .cs-earned { color: #FF6D00; }
 
 /* ══════════════════════════════════════════════════════════
+   PREMIUM SKIN: CRT OVERDRIVE
+   ══════════════════════════════════════════════════════════ */
+body.skin-crt {
+  --neon-cyan: #00FFAA;
+  --neon-blue: #00FFAA;
+  --neon-gold: #FF0055;
+  --bg-color: #010502;
+  --text-primary: #e0ffe8;
+  --text-dim: #00aa66;
+  
+  background-color: var(--bg-color);
+  background-image: none;
+  overflow: hidden; /* Prevent scanline scroll bug */
+}
+
+/* CRT Screen curvature and scanlines */
+body.skin-crt::before {
+  content: "";
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+  background-size: 100% 4px, 6px 100%;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* Vignette / CRT Tube shadow */
+body.skin-crt::after {
+  content: "";
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  box-shadow: inset 0 0 150px rgba(0,0,0,0.9);
+  pointer-events: none;
+  z-index: 10000;
+}
+
+/* Global Flicker and Chromatic Aberration */
+body.skin-crt .screen {
+  animation: crt-flicker 0.15s infinite;
+  text-shadow: 2px 0 1px rgba(255,0,0,0.5), -2px 0 1px rgba(0,255,255,0.5);
+}
+
+@keyframes crt-flicker {
+  0% { opacity: 0.95; }
+  50% { opacity: 0.90; }
+  100% { opacity: 1; }
+}
+
+/* Glitch effect for titles */
+body.skin-crt .logo-text, 
+body.skin-crt .shop-title, 
+body.skin-crt .sb-val {
+  position: relative;
+  text-shadow: 0.05em 0 0 rgba(255,0,0,0.75), -0.05em -0.025em 0 rgba(0,255,0,0.75), -0.025em 0.05em 0 rgba(0,0,255,0.75);
+  animation: glitch-anim 2s infinite linear alternate-reverse;
+}
+
+@keyframes glitch-anim {
+  0% { clip-path: inset(20% 0 80% 0); transform: translate(-2px, 1px); }
+  20% { clip-path: inset(60% 0 10% 0); transform: translate(2px, -1px); }
+  40% { clip-path: inset(40% 0 50% 0); transform: translate(-2px, 2px); }
+  60% { clip-path: inset(80% 0 5% 0); transform: translate(2px, -2px); }
+  80% { clip-path: inset(10% 0 70% 0); transform: translate(-1px, 1px); }
+  100% { clip-path: inset(30% 0 50% 0); transform: translate(1px, -1px); }
+}
+
+body.skin-crt .btn-main { background: rgba(0,255,170,0.1); border-color: #00FFAA; color: #e0ffe8; }
+body.skin-crt .btn-secondary { background: rgba(0,0,0,0.5); border-color: #00FFAA; color: #00FFAA; }
+body.skin-crt .credits-strip { background: rgba(0,255,170,0.1); border-color: #FF0055; }
+body.skin-crt .cs-earned { color: #FF0055; font-weight: bold; }
+
+/* ══════════════════════════════════════════════════════════
    SHOP SCREEN
    ══════════════════════════════════════════════════════════ */
 .shop-content {
@@ -931,6 +1003,7 @@ body.skin-candy .credits-summary.win .cs-earned { color: #FF6D00; }
 .sp-synthwave{ background: radial-gradient(circle at 40% 40%, #160024 0%, #080010 100%); }
 .sp-botanic  { background: radial-gradient(circle at 40% 40%, #2A422D 0%, #121F14 100%); }
 .sp-candy    { background: radial-gradient(circle at 40% 40%, #F8BBD0 0%, #FCE4EC 100%); }
+.sp-crt      { background: radial-gradient(circle at 40% 40%, #001108 0%, #000804 100%); }
 
 .sp-ring {
   width: 70px; height: 70px;
@@ -945,6 +1018,7 @@ body.skin-candy .credits-summary.win .cs-earned { color: #FF6D00; }
 .sp-synthwave .sp-ring { --sp-clr: #FF00BE; }
 .sp-botanic  .sp-ring { --sp-clr: #8BC34A; }
 .sp-candy    .sp-ring { --sp-clr: #00E5FF; box-shadow: 0 0 10px #FFF; }
+.sp-crt      .sp-ring { --sp-clr: #00FFAA; box-shadow: 0 0 10px #00FFAA, inset 0 0 5px #00FFAA; }
 
 .sp-arrow {
   width: 8px; height: 8px;
@@ -961,6 +1035,7 @@ body.skin-candy .credits-summary.win .cs-earned { color: #FF6D00; }
 .sp-synthwave .sp-arrow { --sp-clr: #FF00BE; }
 .sp-botanic  .sp-arrow { --sp-clr: #CCFF90; }
 .sp-candy    .sp-arrow { --sp-clr: #FF4081; }
+.sp-crt      .sp-arrow { --sp-clr: #FFFFFF; }
 
 .sp-coin {
   width: 13px; height: 13px;
@@ -976,6 +1051,7 @@ body.skin-candy .credits-summary.win .cs-earned { color: #FF6D00; }
 .sp-synthwave .sp-coin { --sp-acc: #FFBE0B; }
 .sp-botanic  .sp-coin { --sp-acc: #FFCA28; }
 .sp-candy    .sp-coin { --sp-acc: #FFEA00; }
+.sp-crt      .sp-coin { --sp-acc: #FF0055; box-shadow: 0 0 10px #FF0055; }
 
 /* ══════════════════════════════════════════════════════════
    ENDLESS MODE UI
