@@ -652,13 +652,463 @@ body::after {
 }
 .difficulty-selector.compact .diff-desc { display: none; }
 
+/* ══════════════════════════════════════════════════════════
+   SKIN THEMES — override CSS custom properties on body
+   ══════════════════════════════════════════════════════════ */
+
+/* ── INFERNO (fire/lava) ── */
+body.skin-inferno {
+  --neon-blue:    #FF4500;
+  --neon-cyan:    #FF7A30;
+  --neon-gold:    #FFB800;
+  --neon-red:     #FF1744;
+  --neon-green:   #FF8F00;
+  --bg-dark:      #080100;
+  --bg-mid:       #0F0200;
+  --bg-panel:     #1A0400;
+  --text-primary: #FFE0CC;
+  --text-dim:     #7A4A2A;
+  --coin-color:   #FFB800;
+  --arrow-color:  #FF4500;
+}
+body.skin-inferno::before {
+  background:
+    linear-gradient(rgba(255,69,0,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,69,0,0.04) 1px, transparent 1px);
+}
+body.skin-inferno::after {
+  background: radial-gradient(ellipse at center, rgba(160,30,0,0.2) 0%, transparent 70%);
+}
+
+/* ── MATRIX (hacker green) ── */
+body.skin-matrix {
+  --neon-blue:    #00FF41;
+  --neon-cyan:    #00CC33;
+  --neon-gold:    #00FF41;
+  --neon-red:     #FF0000;
+  --neon-green:   #00FF41;
+  --bg-dark:      #000400;
+  --bg-mid:       #000800;
+  --bg-panel:     #001200;
+  --text-primary: #C0FFC0;
+  --text-dim:     #2A5A2A;
+  --coin-color:   #00FF41;
+  --arrow-color:  #00FF41;
+  --font-arcade:  'Courier New', monospace;
+}
+body.skin-matrix::before {
+  background:
+    linear-gradient(rgba(0,255,65,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,255,65,0.05) 1px, transparent 1px);
+}
+body.skin-matrix::after {
+  background: radial-gradient(ellipse at center, rgba(0,80,0,0.2) 0%, transparent 70%);
+}
+body.skin-matrix .logo-text {
+  text-shadow: 0 0 10px #00FF41, 0 0 30px #00FF41, 0 0 60px rgba(0,255,65,0.5);
+  color: #00FF41;
+}
+
+/* ── SYNTHWAVE (retro purple/pink) ── */
+body.skin-synthwave {
+  --neon-blue:    #FF00BE;
+  --neon-cyan:    #00F5FF;
+  --neon-gold:    #FFBE0B;
+  --neon-red:     #FF1744;
+  --neon-green:   #00FF88;
+  --bg-dark:      #080010;
+  --bg-mid:       #100020;
+  --bg-panel:     #180030;
+  --text-primary: #FFD0F0;
+  --text-dim:     #6A3A6A;
+  --coin-color:   #FFBE0B;
+  --arrow-color:  #FF00BE;
+}
+body.skin-synthwave::before {
+  background:
+    linear-gradient(rgba(255,0,190,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,245,255,0.04) 1px, transparent 1px);
+}
+body.skin-synthwave::after {
+  background: radial-gradient(ellipse at center, rgba(100,0,160,0.2) 0%, transparent 70%);
+}
+body.skin-synthwave .logo-text {
+  text-shadow: 0 0 10px #FF00BE, 0 0 30px #FF00BE, 0 0 60px rgba(255,0,190,0.5);
+  color: #FF00BE;
+}
+
+/* ── BOTANIC (Zen Nature) ── */
+body.skin-botanic {
+  --neon-blue:    #8BC34A;
+  --neon-cyan:    #AED581;
+  --neon-gold:    #FFCA28;
+  --neon-red:     #FF5252;
+  --neon-green:   #4CAF50;
+  --bg-dark:      #121F14;
+  --bg-mid:       #1C2E1F;
+  --bg-panel:     #2A422D;
+  --text-primary: #F1F8E9;
+  --text-dim:     #A5D6A7;
+  --coin-color:   #FFCA28;
+  --arrow-color:  #8BC34A;
+}
+body.skin-botanic::before {
+  background: radial-gradient(circle at 10% 20%, rgba(139,195,74,0.06) 0%, transparent 40%),
+              radial-gradient(circle at 90% 80%, rgba(174,213,129,0.05) 0%, transparent 40%);
+  animation: none;
+}
+body.skin-botanic::after {
+  background: radial-gradient(ellipse at center, rgba(46,125,50,0.15) 0%, transparent 70%);
+}
+body.skin-botanic .logo-text {
+  text-shadow: 0 0 10px rgba(139,195,74,0.4), 0 0 30px rgba(139,195,74,0.2);
+  color: #CCFF90;
+  letter-spacing: 5px;
+}
+
+/* ── SUGAR RUSH (Pastel candy theme) ── */
+body.skin-candy {
+  --neon-blue:    #00E5FF;
+  --neon-cyan:    #18FFFF;
+  --neon-gold:    #FFEA00;
+  --neon-red:     #FF4081;
+  --neon-green:   #64FFDA;
+  --bg-dark:      #FCE4EC;
+  --bg-mid:       #F8BBD0;
+  --bg-panel:     #F48FB1;
+  --text-primary: #880E4F;
+  --text-dim:     #AD1457;
+  --coin-color:   #FFEA00;
+  --arrow-color:  #FF4081;
+}
+body.skin-candy::before {
+  background: repeating-linear-gradient(45deg, rgba(255,255,255,0.4), rgba(255,255,255,0.4) 20px, transparent 20px, transparent 40px);
+  animation: none;
+}
+body.skin-candy::after {
+  background: radial-gradient(ellipse at center, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 80%);
+}
+body.skin-candy .logo-text {
+  text-shadow: 2px 2px 0px #FF4081, -2px -2px 0px #00E5FF, 0 0 20px #FFF;
+  color: #FFFFFF;
+}
+body.skin-candy .counter-number { color: #FF4081; text-shadow: 2px 2px 0 #FFF; }
+body.skin-candy .counter-number.bump { color: #FFEA00; text-shadow: 2px 2px 0 #FF4081; }
+body.skin-candy .btn-action { background: radial-gradient(circle at 40% 35%, #00E5FF, #00B8D4); border-color: #FFF; color: #FFF; box-shadow: 0 0 15px rgba(0,229,255,0.5); }
+body.skin-candy .btn-main { background: linear-gradient(135deg, #FF4081, #C2185B); color: #FFF; box-shadow: 0 0 20px rgba(255,64,129,0.3); border-color: #F8BBD0; }
+body.skin-candy .btn-secondary { background: #FFF; color: #FF4081; border-color: #FF4081; }
+body.skin-candy .instructions { background: rgba(255,255,255,0.6); border-color: #FFF; }
+body.skin-candy .skin-card { background: rgba(255,255,255,0.5); border-color: #F8BBD0; }
+body.skin-candy .skin-card.skin-active { background: rgba(255,255,255,0.8); border-color: #FF4081; box-shadow: 0 0 15px rgba(255,64,129,0.2); }
+body.skin-candy .skin-action-btn { background: #FFF; color: #FF4081; border-color: #F8BBD0; }
+body.skin-candy .credits-strip { background: rgba(255,255,255,0.5); border-color: #FFEA00; }
+body.skin-candy .credits-summary { background: rgba(255,255,255,0.6); border-color: #F8BBD0; }
+body.skin-candy .credits-summary.win { border-color: #FFEA00; background: rgba(255,234,0,0.15); }
+body.skin-candy .cs-earned { color: #FF4081; font-weight: bold; }
+body.skin-candy .credits-summary.win .cs-earned { color: #FF6D00; }
+
+/* ══════════════════════════════════════════════════════════
+   SHOP SCREEN
+   ══════════════════════════════════════════════════════════ */
+.shop-content {
+  max-width: 600px;
+  width: 100%;
+  gap: 16px;
+  padding: 20px 16px;
+  overflow-y: auto;
+  max-height: 100vh;
+}
+.shop-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 12px;
+}
+.shop-title {
+  font-family: var(--font-arcade);
+  font-size: clamp(14px, 3vw, 20px);
+  font-weight: 900;
+  color: var(--neon-blue);
+  text-shadow: 0 0 12px var(--neon-blue);
+  letter-spacing: 2px;
+}
+.shop-balance {
+  font-family: var(--font-arcade);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--neon-gold);
+  text-shadow: 0 0 8px var(--neon-gold);
+}
+.shop-subtitle {
+  font-size: 12px;
+  color: var(--text-dim);
+  letter-spacing: 1px;
+}
+.btn-back {
+  font-family: var(--font-arcade);
+  font-size: 11px;
+  letter-spacing: 2px;
+  padding: 8px 14px;
+  border: 1px solid rgba(0,207,255,0.3);
+  border-radius: 8px;
+  background: rgba(0,207,255,0.08);
+  color: var(--neon-blue);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+.btn-back:hover { background: rgba(0,207,255,0.15); border-color: var(--neon-blue); }
+
+.shop-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  width: 100%;
+}
+
+/* Skin card */
+.skin-card {
+  background: rgba(0,207,255,0.04);
+  border: 1px solid rgba(0,207,255,0.15);
+  border-radius: 14px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  transition: all 0.2s ease;
+}
+.skin-card.skin-active {
+  border-color: var(--neon-blue);
+  background: rgba(0,207,255,0.1);
+  box-shadow: 0 0 16px rgba(0,207,255,0.25);
+}
+.skin-name {
+  font-family: var(--font-arcade);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: 2px;
+}
+.skin-sub {
+  font-size: 11px;
+  color: var(--text-dim);
+  text-align: center;
+}
+.skin-action-btn {
+  font-family: var(--font-arcade);
+  font-size: 9px;
+  letter-spacing: 1px;
+  padding: 7px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(0,207,255,0.3);
+  background: rgba(0,207,255,0.08);
+  color: var(--neon-blue);
+  cursor: pointer;
+  width: 100%;
+  transition: all 0.2s ease;
+}
+.skin-action-btn:hover:not([disabled]) { background: rgba(0,207,255,0.18); }
+.skin-action-btn.btn-active { background: rgba(0,207,255,0.2); border-color: var(--neon-blue); color: var(--neon-cyan); }
+.skin-action-btn.btn-owned { border-color: rgba(57,255,20,0.4); color: #39FF14; }
+.skin-action-btn.btn-cantbuy, .skin-action-btn[disabled] { opacity: 0.35; cursor: not-allowed; }
+
+/* CSS Skin Previews */
+.skin-preview {
+  width: 100%;
+  height: 90px;
+  border-radius: 10px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.sp-cyclone  { background: radial-gradient(circle at 40% 40%, #0C1A2E 0%, #04080F 100%); }
+.sp-inferno  { background: radial-gradient(circle at 40% 40%, #1A0400 0%, #080100 100%); }
+.sp-matrix   { background: radial-gradient(circle at 40% 40%, #000D00 0%, #000400 100%); }
+.sp-synthwave{ background: radial-gradient(circle at 40% 40%, #160024 0%, #080010 100%); }
+.sp-botanic  { background: radial-gradient(circle at 40% 40%, #2A422D 0%, #121F14 100%); }
+.sp-candy    { background: radial-gradient(circle at 40% 40%, #F8BBD0 0%, #FCE4EC 100%); }
+
+.sp-ring {
+  width: 70px; height: 70px;
+  border-radius: 50%;
+  border: 3px solid var(--sp-clr, #00CFFF);
+  box-shadow: 0 0 10px var(--sp-clr, #00CFFF);
+  position: absolute;
+}
+.sp-cyclone  .sp-ring { --sp-clr: #00CFFF; }
+.sp-inferno  .sp-ring { --sp-clr: #FF4500; }
+.sp-matrix   .sp-ring { --sp-clr: #00FF41; }
+.sp-synthwave .sp-ring { --sp-clr: #FF00BE; }
+.sp-botanic  .sp-ring { --sp-clr: #8BC34A; }
+.sp-candy    .sp-ring { --sp-clr: #00E5FF; box-shadow: 0 0 10px #FFF; }
+
+.sp-arrow {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--sp-clr, #00CFFF);
+  box-shadow: 0 0 10px var(--sp-clr, #00CFFF);
+  position: absolute;
+  top: 50%; left: calc(50% + 30px);
+  transform: translateY(-50%);
+}
+.sp-cyclone  .sp-arrow { --sp-clr: #00CFFF; }
+.sp-inferno  .sp-arrow { --sp-clr: #FF4500; }
+.sp-matrix   .sp-arrow { --sp-clr: #00FF41; }
+.sp-synthwave .sp-arrow { --sp-clr: #FF00BE; }
+.sp-botanic  .sp-arrow { --sp-clr: #CCFF90; }
+.sp-candy    .sp-arrow { --sp-clr: #FF4081; }
+
+.sp-coin {
+  width: 13px; height: 13px;
+  border-radius: 50%;
+  background: var(--sp-acc, #FFD700);
+  box-shadow: 0 0 8px var(--sp-acc, #FFD700);
+  position: absolute;
+  top: 30%; left: 60%;
+}
+.sp-cyclone  .sp-coin { --sp-acc: #FFD700; }
+.sp-inferno  .sp-coin { --sp-acc: #FFB800; }
+.sp-matrix   .sp-coin { --sp-acc: #00FF41; }
+.sp-synthwave .sp-coin { --sp-acc: #FFBE0B; }
+.sp-botanic  .sp-coin { --sp-acc: #FFCA28; }
+.sp-candy    .sp-coin { --sp-acc: #FFEA00; }
+
+/* ══════════════════════════════════════════════════════════
+   ENDLESS MODE UI
+   ══════════════════════════════════════════════════════════ */
+.endless-toggle-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.btn-endless {
+  font-family: var(--font-arcade);
+  font-size: 11px;
+  letter-spacing: 2px;
+  padding: 9px 18px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,215,0,0.3);
+  background: rgba(255,215,0,0.06);
+  color: var(--neon-gold);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.btn-endless.active {
+  border-color: var(--neon-gold);
+  background: rgba(255,215,0,0.15);
+  box-shadow: 0 0 16px rgba(255,215,0,0.3);
+  animation: endlessPulse 1.5s ease-in-out infinite;
+}
+@keyframes endlessPulse {
+  0%,100% { box-shadow: 0 0 16px rgba(255,215,0,0.3); }
+  50%      { box-shadow: 0 0 28px rgba(255,215,0,0.55); }
+}
+.endless-hint {
+  font-family: var(--font-arcade);
+  font-size: 8px;
+  letter-spacing: 1px;
+  color: var(--text-dim);
+}
+.diff-locked {
+  opacity: 0.3 !important;
+  cursor: not-allowed !important;
+  pointer-events: none;
+}
+.hud-difficulty.endless {
+  border-color: var(--neon-gold) !important;
+  color: var(--neon-gold) !important;
+  background: rgba(255,215,0,0.1) !important;
+}
+
+/* Endless stats in gameover */
+.endless-stats {
+  font-family: var(--font-arcade);
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,215,0,0.3);
+  background: rgba(255,215,0,0.07);
+  color: var(--neon-gold);
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.hs-label { color: var(--neon-gold); }
+.hs-val   { color: var(--neon-cyan); font-weight: 700; }
+
+/* Endless unlock banner */
+.endless-unlock-banner {
+  font-family: var(--font-arcade);
+  font-size: 11px;
+  letter-spacing: 2px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,215,0,0.5);
+  background: rgba(255,215,0,0.12);
+  color: var(--neon-gold);
+  text-align: center;
+  animation: unlockFlash 0.5s ease-out;
+}
+@keyframes unlockFlash {
+  0%   { transform: scale(0.8); opacity: 0; }
+  60%  { transform: scale(1.05); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* ══════════════════════════════════════════════════════════
+   MISC NEW UI
+   ══════════════════════════════════════════════════════════ */
+.start-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+.result-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+.btn-secondary {
+  font-family: var(--font-arcade);
+  font-size: 12px;
+  letter-spacing: 2px;
+  padding: 11px 32px;
+  border: 1px solid rgba(0,207,255,0.25);
+  border-radius: 50px;
+  background: rgba(0,207,255,0.06);
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.btn-secondary:hover {
+  background: rgba(0,207,255,0.12);
+  color: var(--neon-blue);
+  border-color: rgba(0,207,255,0.4);
+}
+
 /* ── Responsive ── */
 @media (max-height: 700px) {
   .canvas-wrapper { margin-top: 70px; }
   .btn-action { width: 100px; height: 100px; bottom: 16px; font-size: 12px; }
   .logo-text { font-size: 40px; }
+  .shop-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
 }
 @media (max-width: 400px) {
   .hud { padding: 12px 16px 10px; }
   .counter-number { font-size: 40px; }
+  .shop-grid { grid-template-columns: 1fr 1fr; }
 }
+

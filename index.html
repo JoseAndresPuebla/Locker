@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CYCLONE – Arcade Timing Game</title>
-  <meta name="description" content="Juego arcade de timing: pulsa el botón cuando la flecha esté en la moneda. ¿Puedes ganar antes de que sea demasiado rápido?" />
+  <meta name="description" content="Juego arcade de timing: pulsa el botón cuando la flecha esté en la moneda." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet" />
@@ -12,7 +12,7 @@
 </head>
 <body>
 
-  <!-- ── SCREEN: START ───────────────────────────── -->
+  <!-- ── SCREEN: START ── -->
   <div id="screen-start" class="screen active">
     <div class="screen-content">
       <div class="logo">
@@ -25,29 +25,30 @@
         <p>Acierta <strong>25 veces</strong> para ganar 🏆</p>
       </div>
 
-      <div class="difficulty-selector" role="group" aria-label="Selección de dificultad">
+      <div class="difficulty-selector" role="group" aria-label="Dificultad">
         <div class="difficulty-label">DIFICULTAD</div>
         <div class="difficulty-options">
           <button class="diff-btn" id="diff-facil" data-difficulty="facil" aria-pressed="false">
-            <span class="diff-name">FÁCIL</span>
-            <span class="diff-desc">Zona amplia</span>
+            <span class="diff-name">FÁCIL</span><span class="diff-desc">Zona amplia</span>
           </button>
           <button class="diff-btn active" id="diff-normal" data-difficulty="normal" aria-pressed="true">
-            <span class="diff-name">NORMAL</span>
-            <span class="diff-desc">Estándar</span>
+            <span class="diff-name">NORMAL</span><span class="diff-desc">Estándar</span>
           </button>
           <button class="diff-btn" id="diff-dificil" data-difficulty="dificil" aria-pressed="false">
-            <span class="diff-name">DIFÍCIL</span>
-            <span class="diff-desc">Zona ajustada</span>
+            <span class="diff-name">DIFÍCIL</span><span class="diff-desc">Zona ajustada</span>
           </button>
           <button class="diff-btn" id="diff-extremo" data-difficulty="extremo" aria-pressed="false">
-            <span class="diff-name">EXTREMO</span>
-            <span class="diff-desc">Máxima presión</span>
+            <span class="diff-name">EXTREMO</span><span class="diff-desc">Máx presión</span>
           </button>
         </div>
       </div>
 
-      <!-- Credits display -->
+      <!-- Endless toggle (hidden until a difficulty is beaten) -->
+      <div id="endless-toggle-container" class="endless-toggle-container" style="display:none">
+        <button id="btn-endless-toggle" class="btn-endless">∞ ENDLESS OFF</button>
+        <span class="endless-hint">Desbloqueado al completar Normal</span>
+      </div>
+
       <div class="credits-strip" id="start-credits-strip">
         <span class="credits-strip-icon">🪙</span>
         <span class="credits-strip-val" id="start-credits-val">100</span>
@@ -57,14 +58,19 @@
       <div class="key-hints">
         <span class="key">ESPACIO</span> <span class="key">CLICK</span> <span class="key">TAP</span>
       </div>
-      <button id="btn-start" class="btn-main" aria-label="Iniciar juego">
-        <span>INSERTAR MONEDA</span>
-        <div class="btn-glow"></div>
-      </button>
+
+      <div class="start-actions">
+        <button id="btn-start" class="btn-main" aria-label="Iniciar juego">
+          <span>INSERTAR MONEDA</span><div class="btn-glow"></div>
+        </button>
+        <button id="btn-shop" class="btn-secondary" aria-label="Tienda de skins">
+          🎨 TIENDA
+        </button>
+      </div>
     </div>
   </div>
 
-  <!-- ── SCREEN: GAME ───────────────────────────── -->
+  <!-- ── SCREEN: GAME ── -->
   <div id="screen-game" class="screen">
     <div class="hud">
       <div class="hud-item">
@@ -73,7 +79,7 @@
       </div>
       <div class="hud-center">
         <div id="counter-to-go" class="counter-number">25</div>
-        <div class="counter-label">TO GO!</div>
+        <div class="counter-label" id="counter-label">TO GO!</div>
       </div>
       <div class="hud-item">
         <div class="hud-label">ACIERTOS</div>
@@ -81,105 +87,89 @@
         <div class="hud-credits-mini">🪙<span id="hud-credits-val">100</span></div>
       </div>
     </div>
-
     <div class="canvas-wrapper">
       <canvas id="game-canvas" width="420" height="420" aria-label="Pista del juego"></canvas>
       <div id="hit-feedback" class="hit-feedback"></div>
     </div>
-
     <button id="btn-action" class="btn-action" aria-label="Pulsar">
-      <div class="btn-action-ring"></div>
-      <span>¡PULSA!</span>
+      <div class="btn-action-ring"></div><span>¡PULSA!</span>
     </button>
   </div>
 
-  <!-- ── SCREEN: GAME OVER ──────────────────────── -->
+  <!-- ── SCREEN: GAME OVER ── -->
   <div id="screen-gameover" class="screen">
     <div class="screen-content">
       <div class="result-title danger-glow">GAME OVER</div>
       <div class="result-sub">La flecha te ganó</div>
       <div class="result-stats">
-        <div class="stat">
-          <div class="stat-value" id="go-hits">0</div>
-          <div class="stat-label">Aciertos</div>
-        </div>
-        <div class="stat">
-          <div class="stat-value" id="go-speed">1.0x</div>
-          <div class="stat-label">Velocidad final</div>
-        </div>
+        <div class="stat"><div class="stat-value" id="go-hits">0</div><div class="stat-label">Aciertos</div></div>
+        <div class="stat"><div class="stat-value" id="go-speed">1.0x</div><div class="stat-label">Velocidad final</div></div>
       </div>
-
-      <!-- Credits summary -->
+      <!-- Endless high score (shown only in endless mode) -->
+      <div id="go-endless-stats" class="endless-stats" style="display:none"></div>
       <div class="credits-summary">
         <span class="cs-earned">+<span id="go-credits-earned">0</span> 🪙 recogidas</span>
         <span class="cs-sep">·</span>
         <span class="cs-balance">Saldo: <span id="go-credits-balance" class="cs-balance-val">90</span> 🪙</span>
       </div>
-
-      <!-- Difficulty selector for next game -->
-      <div class="difficulty-selector compact" role="group" aria-label="Dificultad próxima partida">
+      <div class="difficulty-selector compact" role="group" aria-label="Próxima dificultad">
         <div class="difficulty-label">PRÓXIMA DIFICULTAD</div>
         <div class="difficulty-options">
-          <button class="diff-btn" id="go-diff-facil" data-difficulty="facil" aria-pressed="false">
-            <span class="diff-name">FÁCIL</span>
-          </button>
-          <button class="diff-btn active" id="go-diff-normal" data-difficulty="normal" aria-pressed="true">
-            <span class="diff-name">NORMAL</span>
-          </button>
-          <button class="diff-btn" id="go-diff-dificil" data-difficulty="dificil" aria-pressed="false">
-            <span class="diff-name">DIFÍCIL</span>
-          </button>
-          <button class="diff-btn" id="go-diff-extremo" data-difficulty="extremo" aria-pressed="false">
-            <span class="diff-name">EXTREMO</span>
-          </button>
+          <button class="diff-btn" id="go-diff-facil" data-difficulty="facil" aria-pressed="false"><span class="diff-name">FÁCIL</span></button>
+          <button class="diff-btn active" id="go-diff-normal" data-difficulty="normal" aria-pressed="true"><span class="diff-name">NORMAL</span></button>
+          <button class="diff-btn" id="go-diff-dificil" data-difficulty="dificil" aria-pressed="false"><span class="diff-name">DIFÍCIL</span></button>
+          <button class="diff-btn" id="go-diff-extremo" data-difficulty="extremo" aria-pressed="false"><span class="diff-name">EXTREMO</span></button>
         </div>
       </div>
-
-      <button id="btn-retry" class="btn-main" aria-label="Reintentar">
-        <span>REINTENTAR</span>
-        <div class="btn-glow"></div>
-      </button>
+      <div class="result-actions">
+        <button id="btn-retry" class="btn-main" aria-label="Reintentar"><span>REINTENTAR</span><div class="btn-glow"></div></button>
+        <button id="btn-go-shop" class="btn-secondary">🎨 TIENDA</button>
+      </div>
     </div>
   </div>
 
-  <!-- ── SCREEN: WIN ────────────────────────────── -->
+  <!-- ── SCREEN: WIN ── -->
   <div id="screen-win" class="screen">
     <div class="screen-content">
       <div class="win-trophy">🏆</div>
       <div class="result-title win-glow">¡GANASTE!</div>
       <div class="result-sub">25 monedas recogidas</div>
-
-      <!-- Credits summary -->
+      <!-- Endless unlock notification -->
+      <div id="win-endless-unlock" class="endless-unlock-banner" style="display:none;opacity:1;transition:opacity 1s ease;"></div>
       <div class="credits-summary win">
         <span class="cs-earned">+<span id="win-credits-earned">25</span> 🪙 recogidas</span>
         <span class="cs-sep">·</span>
         <span class="cs-balance">Saldo: <span id="win-credits-balance" class="cs-balance-val">115</span> 🪙</span>
       </div>
-
-      <!-- Difficulty selector for next game -->
-      <div class="difficulty-selector compact" role="group" aria-label="Dificultad próxima partida">
+      <div class="difficulty-selector compact" role="group" aria-label="Próxima dificultad">
         <div class="difficulty-label">PRÓXIMA DIFICULTAD</div>
         <div class="difficulty-options">
-          <button class="diff-btn" id="win-diff-facil" data-difficulty="facil" aria-pressed="false">
-            <span class="diff-name">FÁCIL</span>
-          </button>
-          <button class="diff-btn active" id="win-diff-normal" data-difficulty="normal" aria-pressed="true">
-            <span class="diff-name">NORMAL</span>
-          </button>
-          <button class="diff-btn" id="win-diff-dificil" data-difficulty="dificil" aria-pressed="false">
-            <span class="diff-name">DIFÍCIL</span>
-          </button>
-          <button class="diff-btn" id="win-diff-extremo" data-difficulty="extremo" aria-pressed="false">
-            <span class="diff-name">EXTREMO</span>
-          </button>
+          <button class="diff-btn" id="win-diff-facil" data-difficulty="facil" aria-pressed="false"><span class="diff-name">FÁCIL</span></button>
+          <button class="diff-btn active" id="win-diff-normal" data-difficulty="normal" aria-pressed="true"><span class="diff-name">NORMAL</span></button>
+          <button class="diff-btn" id="win-diff-dificil" data-difficulty="dificil" aria-pressed="false"><span class="diff-name">DIFÍCIL</span></button>
+          <button class="diff-btn" id="win-diff-extremo" data-difficulty="extremo" aria-pressed="false"><span class="diff-name">EXTREMO</span></button>
         </div>
       </div>
-
       <div id="win-particles" class="win-particles"></div>
-      <button id="btn-play-again" class="btn-main win" aria-label="Jugar de nuevo">
-        <span>JUGAR DE NUEVO</span>
-        <div class="btn-glow"></div>
-      </button>
+      <div class="result-actions">
+        <button id="btn-play-again" class="btn-main win" aria-label="Jugar de nuevo"><span>JUGAR DE NUEVO</span><div class="btn-glow"></div></button>
+        <button id="btn-win-shop" class="btn-secondary">🎨 TIENDA</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SCREEN: SHOP ── -->
+  <div id="screen-shop" class="screen">
+    <div class="screen-content shop-content">
+      <div class="shop-header">
+        <button id="btn-shop-back" class="btn-back">← VOLVER</button>
+        <div class="shop-title">🎨 TIENDA DE SKINS</div>
+        <div class="shop-balance">🪙 <span id="shop-credits-val">100</span></div>
+      </div>
+      <div class="shop-subtitle">Las skins cambian toda la interfaz visual del juego</div>
+      <div class="shop-grid" id="shop-grid">
+        <!-- Cards injected by JS -->
+      </div>
     </div>
   </div>
 
