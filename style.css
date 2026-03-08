@@ -845,7 +845,7 @@ body.skin-crt::after {
 }
 
 /* Global Flicker and Chromatic Aberration */
-body.skin-crt .screen {
+body.skin-crt .screen.active {
   animation: crt-flicker 0.15s infinite;
   text-shadow: 2px 0 1px rgba(255,0,0,0.5), -2px 0 1px rgba(0,255,255,0.5);
 }
