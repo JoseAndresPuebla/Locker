@@ -844,34 +844,15 @@ body.skin-crt::after {
   z-index: 10000;
 }
 
-/* Global Flicker and Chromatic Aberration */
+/* Global Flicker */
 body.skin-crt .screen-content {
   animation: crt-flicker 0.15s infinite;
-  text-shadow: 2px 0 1px rgba(255,0,0,0.5), -2px 0 1px rgba(0,255,255,0.5);
 }
 
 @keyframes crt-flicker {
   0% { opacity: 0.95; }
   50% { opacity: 0.90; }
   100% { opacity: 1; }
-}
-
-/* Glitch effect for titles */
-body.skin-crt .logo-text, 
-body.skin-crt .shop-title, 
-body.skin-crt .sb-val {
-  position: relative;
-  text-shadow: 0.05em 0 0 rgba(255,0,0,0.75), -0.05em -0.025em 0 rgba(0,255,0,0.75), -0.025em 0.05em 0 rgba(0,0,255,0.75);
-  animation: glitch-anim 2s infinite linear alternate-reverse;
-}
-
-@keyframes glitch-anim {
-  0% { clip-path: inset(20% 0 80% 0); transform: translate(-2px, 1px); }
-  20% { clip-path: inset(60% 0 10% 0); transform: translate(2px, -1px); }
-  40% { clip-path: inset(40% 0 50% 0); transform: translate(-2px, 2px); }
-  60% { clip-path: inset(80% 0 5% 0); transform: translate(2px, -2px); }
-  80% { clip-path: inset(10% 0 70% 0); transform: translate(-1px, 1px); }
-  100% { clip-path: inset(30% 0 50% 0); transform: translate(1px, -1px); }
 }
 
 body.skin-crt .btn-main { background: rgba(0,255,170,0.1); border-color: #00FFAA; color: #e0ffe8; }
