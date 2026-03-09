@@ -474,7 +474,7 @@ body::after {
   padding: 12px 6px;
   border-radius: 10px;
   border: 1px solid rgba(0,207,255,0.2);
-  background: rgba(0,207,255,0.05);
+  background: var(--bg-panel);
   cursor: pointer;
   transition: all 0.2s ease;
   overflow: hidden;
@@ -492,48 +492,48 @@ body::after {
 .diff-btn:active { transform: translateY(0) scale(0.97); }
 
 /* Fácil – verde */
-.diff-btn[data-difficulty="facil"] { border-color: rgba(57,255,20,0.25); }
-.diff-btn[data-difficulty="facil"]::before { background: rgba(57,255,20,0.08); }
+.diff-btn[data-difficulty="facil"] { border-color: rgba(57,255,20,0.3); }
+.diff-btn[data-difficulty="facil"]::before { background: rgba(57,255,20,0.1); }
 .diff-btn[data-difficulty="facil"] .diff-name { color: #39FF14; }
 .diff-btn[data-difficulty="facil"].active {
   border-color: #39FF14;
-  background: rgba(57,255,20,0.15);
-  box-shadow: 0 0 16px rgba(57,255,20,0.4), inset 0 0 12px rgba(57,255,20,0.1);
+  background: var(--bg-panel);
+  box-shadow: 0 0 16px rgba(57,255,20,0.4), inset 0 0 24px rgba(57,255,20,0.2);
 }
 
 /* Normal – azul */
-.diff-btn[data-difficulty="normal"] { border-color: rgba(0,207,255,0.25); }
-.diff-btn[data-difficulty="normal"]::before { background: rgba(0,207,255,0.08); }
+.diff-btn[data-difficulty="normal"] { border-color: rgba(0,207,255,0.3); }
+.diff-btn[data-difficulty="normal"]::before { background: rgba(0,207,255,0.1); }
 .diff-btn[data-difficulty="normal"] .diff-name { color: var(--neon-blue); }
 .diff-btn[data-difficulty="normal"].active {
   border-color: var(--neon-blue);
-  background: rgba(0,207,255,0.15);
-  box-shadow: 0 0 16px rgba(0,207,255,0.4), inset 0 0 12px rgba(0,207,255,0.1);
+  background: var(--bg-panel);
+  box-shadow: 0 0 16px rgba(0,207,255,0.4), inset 0 0 24px rgba(0,207,255,0.2);
 }
 
 /* Difícil – naranja */
-.diff-btn[data-difficulty="dificil"] { border-color: rgba(255,140,0,0.25); }
-.diff-btn[data-difficulty="dificil"]::before { background: rgba(255,140,0,0.08); }
+.diff-btn[data-difficulty="dificil"] { border-color: rgba(255,140,0,0.3); }
+.diff-btn[data-difficulty="dificil"]::before { background: rgba(255,140,0,0.1); }
 .diff-btn[data-difficulty="dificil"] .diff-name { color: #FF8C00; }
 .diff-btn[data-difficulty="dificil"].active {
   border-color: #FF8C00;
-  background: rgba(255,140,0,0.15);
-  box-shadow: 0 0 16px rgba(255,140,0,0.4), inset 0 0 12px rgba(255,140,0,0.1);
+  background: var(--bg-panel);
+  box-shadow: 0 0 16px rgba(255,140,0,0.4), inset 0 0 24px rgba(255,140,0,0.2);
 }
 
 /* Extremo – rojo */
-.diff-btn[data-difficulty="extremo"] { border-color: rgba(255,58,92,0.25); }
-.diff-btn[data-difficulty="extremo"]::before { background: rgba(255,58,92,0.08); }
+.diff-btn[data-difficulty="extremo"] { border-color: rgba(255,58,92,0.3); }
+.diff-btn[data-difficulty="extremo"]::before { background: rgba(255,58,92,0.1); }
 .diff-btn[data-difficulty="extremo"] .diff-name { color: var(--neon-red); }
 .diff-btn[data-difficulty="extremo"].active {
   border-color: var(--neon-red);
-  background: rgba(255,58,92,0.15);
-  box-shadow: 0 0 16px rgba(255,58,92,0.4), inset 0 0 12px rgba(255,58,92,0.1);
+  background: var(--bg-panel);
+  box-shadow: 0 0 16px rgba(255,58,92,0.4), inset 0 0 24px rgba(255,58,92,0.2);
   animation: extremePulse 1.4s ease-in-out infinite;
 }
 @keyframes extremePulse {
-  0%,100% { box-shadow: 0 0 16px rgba(255,58,92,0.4), inset 0 0 12px rgba(255,58,92,0.1); }
-  50%      { box-shadow: 0 0 28px rgba(255,58,92,0.7), inset 0 0 18px rgba(255,58,92,0.2); }
+  0%,100% { box-shadow: 0 0 16px rgba(255,58,92,0.4), inset 0 0 24px rgba(255,58,92,0.2); }
+  50%      { box-shadow: 0 0 28px rgba(255,58,92,0.7), inset 0 0 36px rgba(255,58,92,0.3); }
 }
 
 .diff-name {
@@ -1192,9 +1192,11 @@ body.skin-cartoon .credits-strip-label { color: #000; font-weight: bold; }
   width: 13px; height: 13px;
   border-radius: 50%;
   background: var(--sp-acc, #FFD700);
-  box-shadow: 0 0 8px var(--sp-acc, #FFD700);
+  border: 2px solid #000;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.7);
   position: absolute;
   top: 30%; left: 60%;
+  margin-left: -1px; margin-top: -1px;
 }
 .sp-cyclone  .sp-coin { --sp-acc: #FFD700; }
 .sp-inferno  .sp-coin { --sp-acc: #FFB800; }
@@ -1202,8 +1204,8 @@ body.skin-cartoon .credits-strip-label { color: #000; font-weight: bold; }
 .sp-synthwave .sp-coin { --sp-acc: #FFBE0B; }
 .sp-botanic  .sp-coin { --sp-acc: #FFCA28; }
 .sp-candy    .sp-coin { --sp-acc: #FFEA00; }
-.sp-crt      .sp-coin { --sp-acc: #FF0055; box-shadow: 0 0 10px #FF0055; }
-.sp-cartoon  .sp-coin { --sp-acc: #FFD500; box-shadow: 2px 2px 0px #000; border: 2px solid #000; margin-left:-2px; margin-top:-2px; }
+.sp-crt      .sp-coin { --sp-acc: #FF0055; }
+.sp-cartoon  .sp-coin { --sp-acc: #FFD500; }
 
 /* ══════════════════════════════════════════════════════════
    ENDLESS MODE UI

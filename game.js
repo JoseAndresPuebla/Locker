@@ -498,15 +498,24 @@ const SKIN_KEY  = 'cy_skin';
     }
 
     const pos = polarToXY(coinAngle - 90, TRACK_R);
-    const glow = ctx.createRadialGradient(pos.x, pos.y, 0, pos.x, pos.y, COIN_R * 1.6);
-    glow.addColorStop(0, `${SK.coinGlow}.45)`); glow.addColorStop(0.6, `${SK.coinGlow}.15)`); glow.addColorStop(1, `${SK.coinGlow}0)`);
-    ctx.fillStyle = glow; ctx.beginPath(); ctx.arc(pos.x, pos.y, COIN_R * 1.6, 0, Math.PI * 2); ctx.fill();
-    const cg = ctx.createRadialGradient(pos.x - 3, pos.y - 3, 1, pos.x, pos.y, COIN_R);
-    cg.addColorStop(0, SK.coinLight); cg.addColorStop(0.5, SK.coinFill); cg.addColorStop(1, SK.coinDark);
-    ctx.fillStyle = cg; ctx.beginPath(); ctx.arc(pos.x, pos.y, COIN_R, 0, Math.PI * 2); ctx.fill();
-    ctx.strokeStyle = SK.coinFill; ctx.lineWidth = 1.5; ctx.stroke();
-    ctx.fillStyle = SK.coinText; ctx.font = 'bold 11px Orbitron,monospace';
-    ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('$', pos.x, pos.y + 0.5);
+    if (SK.coinGlow !== 'transparent' && !SK.coinGlow.includes('-1')) {
+      const glow = ctx.createRadialGradient(pos.x, pos.y, 0, pos.x, pos.y, COIN_R * 1.6);
+      glow.addColorStop(0, `${SK.coinGlow}.45)`); glow.addColorStop(0.6, `${SK.coinGlow}.15)`); glow.addColorStop(1, `${SK.coinGlow}0)`);
+      ctx.fillStyle = glow; ctx.beginPath(); ctx.arc(pos.x, pos.y, COIN_R * 1.6, 0, Math.PI * 2); ctx.fill();
+    }
+    
+    // Cartoon coin base
+    ctx.beginPath(); ctx.arc(pos.x, pos.y, COIN_R, 0, Math.PI * 2);
+    ctx.fillStyle = SK.coinFill; ctx.fill();
+    ctx.lineWidth = 2.5; ctx.strokeStyle = '#000000'; ctx.stroke();
+    
+    // Cartoon coin highlight inner ring
+    ctx.beginPath(); ctx.arc(pos.x - 2, pos.y - 2, COIN_R - 5, 0, Math.PI * 2);
+    ctx.lineWidth = 2.5; ctx.strokeStyle = SK.coinLight; ctx.stroke();
+
+    ctx.fillStyle = '#000000'; ctx.font = '900 13px Orbitron,monospace';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; 
+    ctx.fillText('$', pos.x, pos.y + 1.5);
   }
 
   function drawArrow(arrowAngle) {
