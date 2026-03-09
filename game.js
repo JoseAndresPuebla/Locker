@@ -507,15 +507,15 @@ const SKIN_KEY  = 'cy_skin';
     // Cartoon coin base
     ctx.beginPath(); ctx.arc(pos.x, pos.y, COIN_R, 0, Math.PI * 2);
     ctx.fillStyle = SK.coinFill; ctx.fill();
-    ctx.lineWidth = 2.5; ctx.strokeStyle = '#000000'; ctx.stroke();
+    ctx.lineWidth = 2; ctx.strokeStyle = '#000000'; ctx.stroke();
     
-    // Cartoon coin highlight inner ring
-    ctx.beginPath(); ctx.arc(pos.x - 2, pos.y - 2, COIN_R - 5, 0, Math.PI * 2);
-    ctx.lineWidth = 2.5; ctx.strokeStyle = SK.coinLight; ctx.stroke();
+    // Cartoon coin highlight inner ring (now centered and scaled to match preview)
+    ctx.beginPath(); ctx.arc(pos.x, pos.y, COIN_R - 3.5, 0, Math.PI * 2);
+    ctx.lineWidth = 2; ctx.strokeStyle = SK.coinLight; ctx.stroke();
 
     ctx.fillStyle = '#000000'; ctx.font = '900 13px Orbitron,monospace';
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; 
-    ctx.fillText('$', pos.x, pos.y + 1.5);
+    ctx.fillText('$', pos.x, pos.y + 1);
   }
 
   function drawArrow(arrowAngle) {
