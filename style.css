@@ -861,6 +861,146 @@ body.skin-crt .credits-strip { background: rgba(0,255,170,0.1); border-color: #F
 body.skin-crt .cs-earned { color: #FF0055; font-weight: bold; }
 
 /* ══════════════════════════════════════════════════════════
+   CARTOON SKIN: COMIC POP
+   ══════════════════════════════════════════════════════════ */
+body.skin-cartoon {
+  --neon-cyan: #000000;
+  --neon-blue: #0055FF;
+  --neon-gold: #FFD500;
+  --neon-red: #FF3366;
+  --neon-green: #00CC44;
+  --bg-dark: #FFFBCC;
+  --bg-mid: #FFFBCC;
+  --bg-panel: #FFFFFF;
+  --text-primary: #000000;
+  --text-dim: #222222;
+  
+  background-color: var(--bg-dark);
+}
+
+body.skin-cartoon::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle, transparent 20%, #FFF599 150%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+body.skin-cartoon::before {
+  background-image: radial-gradient(#FFCC00 15%, transparent 16%), radial-gradient(#FFCC00 15%, transparent 16%);
+  background-size: 20px 20px;
+  background-position: 0 0, 10px 10px;
+  opacity: 0.2;
+}
+
+/* Hard cartoon shadows and borders */
+body.skin-cartoon .logo-text,
+body.skin-cartoon .shop-title,
+body.skin-cartoon .result-title,
+body.skin-cartoon .stat-value {
+  color: #0055FF;
+  text-shadow: 3px 3px 0px #000 !important;
+  -webkit-text-stroke: 1px #000;
+}
+
+body.skin-cartoon .counter-number {
+  color: #FFD500;
+  text-shadow: 5px 5px 0px #000 !important;
+  -webkit-text-stroke: 2px #000;
+}
+
+body.skin-cartoon .counter-number.bump {
+  color: #FF3366;
+}
+
+body.skin-cartoon .btn-main {
+  background: #FFD500;
+  color: #000;
+  border: 4px solid #000;
+  box-shadow: 4px 4px 0px #000 !important;
+  text-transform: uppercase;
+}
+body.skin-cartoon .btn-main:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 7px 7px 0px #000 !important;
+}
+body.skin-cartoon .btn-main:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px #000 !important;
+}
+
+body.skin-cartoon .btn-action {
+  background: #FF3366;
+  border: 4px solid #000;
+  box-shadow: 5px 5px 0px #000 !important;
+  color: #FFF;
+  text-shadow: 2px 2px 0px #000 !important;
+  -webkit-text-stroke: 1px #000;
+}
+body.skin-cartoon .btn-action-ring {
+  border: 4px dashed rgba(0,0,0,0.5);
+  animation: ringPulse 2s linear infinite;
+}
+
+body.skin-cartoon .instructions,
+body.skin-cartoon .skin-card,
+body.skin-cartoon .auth-box,
+body.skin-cartoon .stat-box,
+body.skin-cartoon .quest-card {
+  background: #FFF;
+  border: 3px solid #000;
+  box-shadow: 4px 4px 0px #000 !important;
+  color: #000;
+}
+body.skin-cartoon .skin-card.skin-active {
+  background: #FFF599;
+  border-color: #000;
+}
+body.skin-cartoon .skin-action-btn,
+body.skin-cartoon .btn-secondary,
+body.skin-cartoon .btn-back {
+  background: #FFF;
+  border: 2px solid #000;
+  box-shadow: 2px 2px 0px #000 !important;
+  color: #000;
+}
+body.skin-cartoon .skin-action-btn:hover:not([disabled]),
+body.skin-cartoon .btn-secondary:hover {
+  background: #EEE;
+  color: #000;
+}
+body.skin-cartoon .skin-action-btn.btn-active {
+  background: #00CC44;
+  color: #000;
+}
+body.skin-cartoon .skin-action-btn.btn-owned {
+  color: #0055FF;
+}
+
+body.skin-cartoon .hud {
+  background: #FFFBCC;
+  border-bottom: 3px solid #000;
+}
+body.skin-cartoon .hud-difficulty {
+  border: 2px solid #000;
+  box-shadow: 2px 2px 0px #000 !important;
+}
+body.skin-cartoon .hud-difficulty.facil { background: #00CC44; color: #000; }
+body.skin-cartoon .hud-difficulty.normal { background: #0055FF; color: #FFF; }
+body.skin-cartoon .hud-difficulty.dificil { background: #FFD500; color: #000; }
+body.skin-cartoon .hud-difficulty.extremo { background: #FF3366; color: #000; }
+
+body.skin-cartoon .credits-strip {
+  background: #FFF;
+  border: 3px solid #000;
+  box-shadow: 3px 3px 0px #000 !important;
+}
+body.skin-cartoon .credits-strip-val { color: #FFD500; text-shadow: 2px 2px 0px #000; -webkit-text-stroke: 1px #000; }
+body.skin-cartoon .credits-strip-label { color: #000; font-weight: bold; }
+
+
+/* ══════════════════════════════════════════════════════════
    SHOP SCREEN
    ══════════════════════════════════════════════════════════ */
 .shop-content {
@@ -1012,6 +1152,7 @@ body.skin-crt .cs-earned { color: #FF0055; font-weight: bold; }
 .sp-botanic  { background: radial-gradient(circle at 40% 40%, #2A422D 0%, #121F14 100%); }
 .sp-candy    { background: radial-gradient(circle at 40% 40%, #F8BBD0 0%, #FCE4EC 100%); }
 .sp-crt      { background: radial-gradient(circle at 40% 40%, #001108 0%, #000804 100%); }
+.sp-cartoon  { background: radial-gradient(circle at 40% 40%, #FFF599 0%, #FFFBCC 100%); }
 
 .sp-ring {
   width: 70px; height: 70px;
@@ -1027,6 +1168,7 @@ body.skin-crt .cs-earned { color: #FF0055; font-weight: bold; }
 .sp-botanic  .sp-ring { --sp-clr: #8BC34A; }
 .sp-candy    .sp-ring { --sp-clr: #00E5FF; box-shadow: 0 0 10px #FFF; }
 .sp-crt      .sp-ring { --sp-clr: #00FFAA; box-shadow: 0 0 10px #00FFAA, inset 0 0 5px #00FFAA; }
+.sp-cartoon  .sp-ring { --sp-clr: #000; box-shadow: 3px 3px 0px #000; border: 4px solid #000; }
 
 .sp-arrow {
   width: 8px; height: 8px;
@@ -1044,6 +1186,7 @@ body.skin-crt .cs-earned { color: #FF0055; font-weight: bold; }
 .sp-botanic  .sp-arrow { --sp-clr: #CCFF90; }
 .sp-candy    .sp-arrow { --sp-clr: #FF4081; }
 .sp-crt      .sp-arrow { --sp-clr: #FFFFFF; }
+.sp-cartoon  .sp-arrow { --sp-clr: #0055FF; box-shadow: 2px 2px 0px #000; border: 2px solid #000; margin-top:-2px; margin-left:-2px; }
 
 .sp-coin {
   width: 13px; height: 13px;
@@ -1060,6 +1203,7 @@ body.skin-crt .cs-earned { color: #FF0055; font-weight: bold; }
 .sp-botanic  .sp-coin { --sp-acc: #FFCA28; }
 .sp-candy    .sp-coin { --sp-acc: #FFEA00; }
 .sp-crt      .sp-coin { --sp-acc: #FF0055; box-shadow: 0 0 10px #FF0055; }
+.sp-cartoon  .sp-coin { --sp-acc: #FFD500; box-shadow: 2px 2px 0px #000; border: 2px solid #000; margin-left:-2px; margin-top:-2px; }
 
 /* ══════════════════════════════════════════════════════════
    ENDLESS MODE UI

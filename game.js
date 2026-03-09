@@ -185,6 +185,19 @@ const SKIN_KEY  = 'cy_skin';
         rA: '#005533', rB: '#00aa66', rGlow: 'rgba(0,255,170,0.5)',
       }
     },
+    cartoon: {
+      name: 'COMIC POP', sub: '💬 CARTOON STYLE', cost: 0, cls: 'skin-cartoon',
+      canvas: {
+        track: [0, 0, 0], arrow: '#0055FF', arrowGlow: 'rgba(0,0,0,-1',
+        arrowHead: '#FFD500', arrowWings: 'transparent',
+        coinFill: '#FFD500', coinDark: '#FF9900', coinLight: '#FFFF66',
+        coinGlow: 'rgba(0,0,0,-1', coinText: '#000000',
+        bg1: 'rgba(255,251,204,1)', bg2: 'rgba(255,245,153,1)', bg3: 'rgba(255,251,204,1)',
+        cIn: '#FFFFFF', cMid: '#FFFFFF', cOut: '#FFFFFF',
+        cGlow: 'rgba(0,0,0,1)', cDots: '#000000',
+        rA: '#000000', rB: '#000000', rGlow: 'rgba(0,0,0,0)',
+      }
+    },
   };
 
   const ADDONS = {
@@ -501,22 +514,26 @@ const SKIN_KEY  = 'cy_skin';
       const ta = arrowAngle - state.direction * t * (state.speed / 60) * 2;
       const tp = polarToXY(ta - 90, ARROW_R);
       ctx.beginPath(); ctx.arc(tp.x, tp.y, 5 - t * 0.5, 0, Math.PI * 2);
-      ctx.fillStyle = `${SK.arrowGlow}${(1 - t / TRAIL_LENGTH) * 0.3})`; ctx.fill();
+      ctx.fillStyle = SK.arrowGlow === 'transparent' ? 'transparent' : `${SK.arrowGlow}${(1 - t / TRAIL_LENGTH) * 0.3})`;
+      ctx.fill();
     }
     const hp = polarToXY(arrowAngle - 90, ARROW_R);
     const ag = ctx.createRadialGradient(hp.x, hp.y, 0, hp.x, hp.y, 22);
-    ag.addColorStop(0, `${SK.arrowGlow}0.6)`); ag.addColorStop(0.5, `${SK.arrowGlow}0.2)`); ag.addColorStop(1, `${SK.arrowGlow}0)`);
+    ag.addColorStop(0, SK.arrowGlow === 'transparent' ? 'transparent' : `${SK.arrowGlow}0.6)`);
+    ag.addColorStop(0.5, SK.arrowGlow === 'transparent' ? 'transparent' : `${SK.arrowGlow}0.2)`);
+    ag.addColorStop(1, SK.arrowGlow === 'transparent' ? 'transparent' : `${SK.arrowGlow}0)`);
     ctx.fillStyle = ag; ctx.beginPath(); ctx.arc(hp.x, hp.y, 22, 0, Math.PI * 2); ctx.fill();
     const tp2 = polarToXY(arrowAngle - 90, ARROW_R - ARROW_LEN);
     ctx.beginPath(); ctx.moveTo(tp2.x, tp2.y); ctx.lineTo(hp.x, hp.y);
     ctx.strokeStyle = SK.arrow; ctx.lineWidth = 4; ctx.lineCap = 'round';
-    ctx.shadowColor = SK.arrow; ctx.shadowBlur = 15; ctx.stroke(); ctx.shadowBlur = 0;
+    ctx.shadowColor = SK.arrowGlow === 'transparent' ? 'transparent' : SK.arrow; ctx.shadowBlur = SK.arrowGlow === 'transparent' ? 0 : 15; ctx.stroke(); ctx.shadowBlur = 0;
     ctx.beginPath(); ctx.arc(hp.x, hp.y, 7, 0, Math.PI * 2); ctx.fillStyle = SK.arrowHead;
-    ctx.shadowColor = SK.arrow; ctx.shadowBlur = 20; ctx.fill(); ctx.shadowBlur = 0;
+    ctx.shadowColor = SK.arrowGlow === 'transparent' ? 'transparent' : SK.arrow; ctx.shadowBlur = SK.arrowGlow === 'transparent' ? 0 : 20; ctx.fill(); ctx.shadowBlur = 0;
     drawArrowWings(arrowAngle, hp);
   }
 
   function drawArrowWings(angle, hp) {
+    if (SK.arrowWings === 'transparent') return;
     const pr = toRad(angle), wx = Math.cos(pr) * 8, wy = Math.sin(pr) * 8;
     const bx = Math.cos(toRad(angle - 90 + 180)) * 10, by = Math.sin(toRad(angle - 90 + 180)) * 10;
     ctx.beginPath(); ctx.moveTo(hp.x, hp.y); ctx.lineTo(hp.x + bx + wx, hp.y + by + wy);
